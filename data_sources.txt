@@ -1,0 +1,274 @@
+Source	Paper	sp_id	sp	ecological	type	significance	
+1	Stanfield.etal_FisheryManagement_2013	1	6 common fish	yes	spatial	yes	
+2	Kaltz.etal_EcolProcesses_2012	1	overall				
+2	Kaltz.etal_EcolProcesses_2012	2	KB				
+2	Kaltz.etal_EcolProcesses_2012	3	rif				
+2	Kaltz.etal_EcolProcesses_2012	4	ancestor				
+2	Kaltz.etal_EcolProcesses_2012	5	control				
+2	Kaltz.etal_EcolProcesses_2012	6	rif				
+2	Kaltz.etal_EcolProcesses_2012	7	phage				
+2	Kaltz.etal_EcolProcesses_2012	8	phage_rif				
+2	Kaltz.etal_EcolProcesses_2012	9	mutS_s				
+2	Kaltz.etal_EcolProcesses_2012	10	mutS_r				
+2	Kaltz.etal_EcolProcesses_2012	11	WT_s				
+2	Kaltz.etal_EcolProcesses_2012	12	WT_r				
+2	Kaltz.etal_EcolProcesses_2012	13	r				
+2	Kaltz.etal_EcolProcesses_2012	14	s				
+2	Kaltz.etal_EcolProcesses_2012	15	mutS				
+2	Kaltz.etal_EcolProcesses_2012	16	WT				
+3	Karban.etal_Ecology_2012	1	wet	yes 	temporal	unsure	
+3	Karban.etal_Ecology_2012	2	dry	yes	temporal	unsure	
+4	Hui.etal_Basic&AppliedEcol_2012	1	epigaeic arthropods	yes	spatial	yes	
+4	Hui.etal_Basic&AppliedEcol_2012	2	stream macroinvertebrates	yes	spatial	yes	
+5	Thein&Singh_IRRN_2011	1	sample 1	yes	spatial	yes	
+5	Thein&Singh_IRRN_2011	2	sample 2	yes	spatial	yes	
+5	Thein&Singh_IRRN_2011	3	sample 3	yes	spatial	yes	
+7	Costa.etal_SciAgric_2010	1	area 1 adult	yes	spatial	yes	
+7	Costa.etal_SciAgric_2010	2	area 2 adult	yes	spatial	yes	
+7	Costa.etal_SciAgric_2010	3	area 1 nymph	yes	spatial	yes	
+7	Costa.etal_SciAgric_2010	4	area 2 nymph	yes	spatial	yes	
+8	Aminayanaba_JASR_2010	1	large				
+8	Aminayanaba_JASR_2010	2	small				
+9	Williams.etal_JMedicalEnto_2007	1	per day	error			
+9	Williams.etal_JMedicalEnto_2007	2	per tray	error			
+10	Lessio&Alma_JEcoEnto_2006	1	S.titanus	yes	spatial	yes	
+12	Nachman_ExpAppAcarology_2006	1	T.urticae				
+12	Nachman_ExpAppAcarology_2006	2	P.persimilis				
+11	Sallam.etal_BioControl_2007	1	depth 1				
+11	Sallam.etal_BioControl_2007	2	depth 2				
+11	Sallam.etal_BioControl_2007	3	depth 3				
+11	Sallam.etal_BioControl_2007	4	depth 4				
+13	McMahon.etal_MammalRev_2005	1	M.leonina				
+14	Sileshi$Mafongoya_ICRAF_2004	1	Diaecoderus spp.	yes	spatial	yes	
+15	Clarke.etal_FreshwaterBiol_2002	1	S3	yes	neither	yes	
+16	Silva.etal_EnvEnto_2003	1	P.unipuncta	yes	spatial	yes	
+17	Parker.etal_TurkJAricFor_2002	1	tot1	yes	spatial	yes	
+17	Parker.etal_TurkJAricFor_2002	2	tot2	yes	spatial	yes	
+17	Parker.etal_TurkJAricFor_2002	3	tot3	yes	spatial	yes	
+17	Parker.etal_TurkJAricFor_2002	4	tot4	yes	spatial	yes	
+17	Parker.etal_TurkJAricFor_2002	5	live1	yes	spatial	yes	
+17	Parker.etal_TurkJAricFor_2002	6	live2	yes	spatial	yes	
+17	Parker.etal_TurkJAricFor_2002	7	live3	yes	spatial	yes	
+17	Parker.etal_TurkJAricFor_2002	8	live4	yes	spatial	yes	
+18	Jimenez.etal_AppliedSoilEcol_2001	1	savanna Andiodrilus sp.	yes	spatial	no	
+18	Jimenez.etal_AppliedSoilEcol_2001	2	savanna Aymara sp.	yes	spatial	no	
+18	Jimenez.etal_AppliedSoilEcol_2001	3	savanna Glossodrilus sp.	yes	spatial	no	
+18	Jimenez.etal_AppliedSoilEcol_2001	4	savanna M.carimaguensis	yes	spatial	no	
+18	Jimenez.etal_AppliedSoilEcol_2001	5	savanna Ocnerodrilidae sp.	yes	spatial	no	
+18	Jimenez.etal_AppliedSoilEcol_2001	6	pasture Andiodrilus sp.	yes	spatial	no	
+18	Jimenez.etal_AppliedSoilEcol_2001	7	pasture Andiorrhinus sp.	yes	spatial	no	
+18	Jimenez.etal_AppliedSoilEcol_2001	8	pasture Aymara sp.	yes	spatial	no	
+18	Jimenez.etal_AppliedSoilEcol_2001	9	pasture Glossodrilus sp.	yes	spatial	no	
+18	Jimenez.etal_AppliedSoilEcol_2001	10	pasture M.carimaguensis	yes	spatial	no	
+18	Jimenez.etal_AppliedSoilEcol_2001	11	pasture Ocnerodrilidae sp.	yes	spatial	no	
+19	Floater_EcolMono_2001	1	1993	yes	spatial	yes	
+19	Floater_EcolMono_2001	2	1994	yes	spatial	yes	
+20	Schexnayder.etal_JEcoEnto_2001	1	D.saccharalis-infested stalks	yes	spatial	yes	
+21	Eleutheriadis&Lazaridou-dimitriadou_JMollusStud_2001	1	33.5	yes	spatial	unsure	
+21	Eleutheriadis&Lazaridou-dimitriadou_JMollusStud_2001	2	32.5	yes	spatial	unsure	
+22	Kendal.etal_Clinical&ExpMetastasis_2000	1	metastasis				
+23	Babineau_Thesis_2000	1	1994 survey	yes	spatial	unsure	
+24	Staikou_JMollStud_1998	1	Capaea vindobonensis	yes	spatial	unsure	
+25	Pahl_Biometrics_1969	1	Paropsis atomaria	yes	spatial	unsure	
+26	Todd_JAniEcol_1978	1	Onchidoris muricata	yes	spatial	unsure	
+27	Buzas_Ecology_1970	1	Ammonia beccarii	yes	spatial	unsure	
+27	Buzas_Ecology_1970	2	Elphidium clavatum	yes	spatial	unsure	
+27	Buzas_Ecology_1970	3	Elphidium tisburyensis	yes	spatial	unsure	
+27	Buzas_Ecology_1970	4	Elphidium sp.	yes	spatial	unsure	
+28	Crawley&Weiner_JAppliedEcol_1991	1	shoot weight January	yes	spatial	yes	weight
+28	Crawley&Weiner_JAppliedEcol_1991	2	shoot weight May	yes	spatial	yes	weight
+28	Crawley&Weiner_JAppliedEcol_1991	3	shoot weight August	yes	spatial	unsure	weight
+29	vanDamme&Hamerlynck_JFishBiol_1992	1	Lernaeocera branchialis				
+30	Warren&Linit_Jnematology_1992	1	B.xylophilus on beetle-infested pine 	yes	spatial	yes	
+30	Warren&Linit_Jnematology_1992	2	B.xylophilus on noninfested pine 	yes	spatial	yes	
+31	Rosewell.etal_JAniEcol_1990	1	field experiments	yes	spatial	yes	
+31	Rosewell.etal_JAniEcol_1990	2	lab experiments	yes	spatial	yes	
+31	Rosewell.etal_JAniEcol_1990	3	British fungi	yes	spatial	yes	
+31	Rosewell.etal_JAniEcol_1990	4	natural egg distribution	yes	spatial	yes	
+31	Rosewell.etal_JAniEcol_1990	5	Australian fruit	yes	spatial	yes	
+32	Samways_Oecologia_1990	1	ants	yes	temporal	unsure	
+32	Samways_Oecologia_1990	2	Pheidole megacephala	yes	temporal	unsure	
+33	Brattery_JParasitology_1986	1	Acanthocephalus lucii	yes	spatial	yes	
+34	Wheeler.etal_Jnematology_1987	1	sampling occasion A	yes	spatial	yes	
+34	Wheeler.etal_Jnematology_1987	2	sampling occasion B	yes	spatial	yes	
+34	Wheeler.etal_Jnematology_1987	3	sampling occasion C	yes	spatial	no	
+34	Wheeler.etal_Jnematology_1987	4	sampling occasion D	yes	spatial	yes	
+35	Purrington.etal_GreatLakesEnto_1989	1	Otiorhnchus ligustici	yes	spatial	unsure	
+36	He&Gaston_AmNat_2003	1	benthic species	yes	spatial	yes	
+36	He&Gaston_AmNat_2003	2	striped ambrosia beetle	yes	spatial	yes	
+37	Dickonson_birds	1	birds	yes	temporal		
+38	EasternWood_birds	1	birds	yes	temporal		
+39	HubbardBrook_LTER_birds	1	hb_bird	yes	temporal		
+39	HubbardBrook_LTER_birds	2	mk_bird	yes	temporal		
+39	HubbardBrook_LTER_birds	3	rp_bird	yes	temporal		
+39	HubbardBrook_LTER_birds	4	sm_bird	yes	temporal		
+40	Konza_LTER_birds	1	birds	yes	temporal		
+41	Luquillo_LTER_birds_Elverde	1	birds	yes	temporal		
+42	mountain bird watch	1	birds	yes	temporal		
+43	Redvers Waterfowls	1	birds	yes	temporal		
+44	Skokholm	1	birds	yes	temporal		
+45	Elita's Data	1	"herps, boldpark"	yes	temporal		
+45	Elita's Data	2	"herps, cowleycounty"	yes	temporal		
+45	Elita's Data	3	"herps, orabanda_raw"	yes	temporal		
+46	Jornada	1	"invertebrate, CALI"	yes	temporal		
+46	Jornada	2	"invertebrate, GRAV"	yes	temporal		
+46	Jornada	3	"invertebrate, SAND"	yes	temporal		
+47	Hubbard_Brook_invert	1	"leps, plot 1"	yes	temporal		
+47	Hubbard_Brook_invert	2	"leps, plot 2"	yes	temporal		
+47	Hubbard_Brook_invert	3	"leps, plot 3"	yes	temporal		
+47	Hubbard_Brook_invert	4	"leps, plot 4"	yes	temporal		
+48	Luquillo_LTER_snails	1	RUN 1	yes	temporal		
+48	Luquillo_LTER_snails	2	RUN 2	yes	temporal		
+48	Luquillo_LTER_snails	3	RUN 3	yes	temporal		
+48	Luquillo_LTER_snails	4	RUN 4	yes	temporal		
+49	UK Nature Reserves butterflies	1	Brockwells Farm	yes	temporal		
+49	UK Nature Reserves butterflies	2	Ham Street Wood National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	3	Woodhurst	yes	temporal		
+49	UK Nature Reserves butterflies	4	Woodwalton Fen National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	5	Leigh Marshes National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	6	"Bevills Wood,  Monks Wood Nature Reserve"	yes	temporal		
+49	UK Nature Reserves butterflies	7	Kingley Vale National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	8	Ebbor Gorge National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	9	Holme Fen National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	10	Monks Wood National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	11	Potton Wood	yes	temporal		
+49	UK Nature Reserves butterflies	12	Aston Rowant National Nature Reserve (north)	yes	temporal		
+49	UK Nature Reserves butterflies	13	Aston Rowant National Nature Reserve (south)	yes	temporal		
+49	UK Nature Reserves butterflies	14	"Ballard Down, Swanage"	yes	temporal		
+49	UK Nature Reserves butterflies	15	Buttlers Hanging	yes	temporal		
+49	UK Nature Reserves butterflies	16	Gomm Valley	yes	temporal		
+49	UK Nature Reserves butterflies	17	Old Winchester Hill National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	18	Wye National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	19	"Loch Garten RSPB,  Abernethy forest"	yes	temporal		
+49	UK Nature Reserves butterflies	20	Skomer Island	yes	temporal		
+49	UK Nature Reserves butterflies	21	Dyfi National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	22	Gibraltar Point National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	23	Lindisfarne National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	24	Oxwich National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	25	Saltfleetby National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	26	Rostherne Mere National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	27	Studland Heath National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	28	Castor Hanglands National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	29	Foxholes	yes	temporal		
+49	UK Nature Reserves butterflies	30	"Nagshead RSPB,  Forest of Dean"	yes	temporal		
+49	UK Nature Reserves butterflies	31	Waterperry Wood FNR	yes	temporal		
+49	UK Nature Reserves butterflies	32	Yarner Wood National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	33	Bure Marshes National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	34	Chippenham Fen National Nature Reserve	yes	temporal		
+49	UK Nature Reserves butterflies	35	Leighton Moss RSPB	yes	temporal		
+49	UK Nature Reserves butterflies	36	Radipole Lake RSPB	yes	temporal		
+49	UK Nature Reserves butterflies	37	Walberswick National Nature Reserve	yes	temporal		
+50	Canada	1	mammal	yes	temporal		
+51	Jornada_mammals	1	mammal	yes	temporal		
+52	Konza_LTER_mammals	1	watershed_010A	yes	temporal		
+52	Konza_LTER_mammals	2	watershed_004F	yes	temporal		
+52	Konza_LTER_mammals	3	watershed_004G	yes	temporal		
+52	Konza_LTER_mammals	4	watershed_004B	yes	temporal		
+52	Konza_LTER_mammals	5	watershed_004D	yes	temporal		
+52	Konza_LTER_mammals	6	watershed_001D	yes	temporal		
+52	Konza_LTER_mammals	7	watershed_000B	yes	temporal		
+52	Konza_LTER_mammals	8	watershed_N00D	yes	temporal		
+52	Konza_LTER_mammals	9	watershed_N01D	yes	temporal		
+52	Konza_LTER_mammals	10	watershed_N04D	yes	temporal		
+52	Konza_LTER_mammals	11	watershed_N00B	yes	temporal		
+52	Konza_LTER_mammals	12	watershed_N01B	yes	temporal		
+52	Konza_LTER_mammals	13	watershed_002C	yes	temporal		
+52	Konza_LTER_mammals	14	watershed_002D	yes	temporal		
+52	Konza_LTER_mammals	15	watershed_010D	yes	temporal		
+52	Konza_LTER_mammals	16	watershed_001A	yes	temporal		
+53	Powdermill	1	mammals	yes	temporal		
+54	Sevilleta	1	mammals_5pgrass	yes	temporal		
+54	Sevilleta	2	mammals_5plarrea	yes	temporal		
+54	Sevilleta	3	mammals_rsgrass	yes	temporal		
+54	Sevilleta	4	mammals_rslarrea	yes	temporal		
+54	Sevilleta	5	mammals_sepultur	yes	temporal		
+54	Sevilleta	6	mammals_two22	yes	temporal		
+54	Sevilleta	7	mammals_goatdraw	yes	temporal		
+54	Sevilleta	8	mammals_savanna	yes	temporal		
+54	Sevilleta	9	mammals_blugrama	yes	temporal		
+55	Shortgrass Steppe mammals	1	24NE	yes	temporal		
+55	Shortgrass Steppe mammals	2	26NW	yes	temporal		
+55	Shortgrass Steppe mammals	3	27NE	yes	temporal		
+55	Shortgrass Steppe mammals	4	13NE	yes	temporal		
+55	Shortgrass Steppe mammals	5	13NW	yes	temporal		
+55	Shortgrass Steppe mammals	6	25NE	yes	temporal		
+55	Shortgrass Steppe mammals	7	13SW	yes	temporal		
+56	southafrica_mammals	1	Golden Gate Highlands NP GGNP	yes	temporal		
+56	southafrica_mammals	2	Golden Gate Highlands NP QwaQwa	yes	temporal		
+56	southafrica_mammals	3	Karoo NP	yes	temporal		
+56	southafrica_mammals	4	Kruger NP South	yes	temporal		
+56	southafrica_mammals	5	Kruger NP Central	yes	temporal		
+56	southafrica_mammals	6	Kruger NP North	yes	temporal		
+56	southafrica_mammals	7	Kruger NP FarNorth	yes	temporal		
+56	southafrica_mammals	8	Mountain Zebra NP	yes	temporal		
+57	Desert Laboratory plant	1	germ counts	yes	temporal		
+58	Kansas_prarie	1	plants	yes	temporal		
+59	La Selva	1	trees	yes	temporal		
+60	SagebrushSteppe	1	annuals	yes	temporal		
+61	MARINe	1	"echinodermata, BOA"	yes	temporal		
+61	MARINe	2	"echinodermata, CAY"	yes	temporal		
+61	MARINe	3	"echinodermata, GPT"	yes	temporal		
+61	MARINe	4	"echinodermata, HAZ"	yes	temporal		
+61	MARINe	5	"echinodermata, HOP"	yes	temporal		
+61	MARINe	6	"echinodermata, MOL"	yes	temporal		
+61	MARINe	7	"echinodermata, OCC"	yes	temporal		
+61	MARINe	8	"echinodermata, PSN"	yes	temporal		
+61	MARINe	9	"echinodermata, PTL"	yes	temporal		
+61	MARINe	10	"echinodermata, STA"	yes	temporal		
+61	MARINe	11	"echinodermata, SCT"	yes	temporal		
+61	MARINe	12	"echinodermata, SWC"	yes	temporal		
+61	MARINe	13	"echinodermata, MCR"	yes	temporal		
+61	MARINe	14	"echinodermata, GAR"	yes	temporal		
+61	MARINe	15	"echinodermata, PBL"	yes	temporal		
+61	MARINe	16	"echinodermata, PIN"	yes	temporal		
+61	MARINe	17	"echinodermata, SIM"	yes	temporal		
+61	MARINe	18	"arthropoda, BOA"	yes	temporal		
+61	MARINe	19	"arthropoda, CAY"	yes	temporal		
+61	MARINe	20	"arthropoda, CHI"	yes	temporal		
+61	MARINe	21	"arthropoda, DAV"	yes	temporal		
+61	MARINe	22	"arthropoda, DIA"	yes	temporal		
+61	MARINe	23	"arthropoda, GAR"	yes	temporal		
+61	MARINe	24	"arthropoda, GPT"	yes	temporal		
+61	MARINe	25	"arthropoda, HAZ"	yes	temporal		
+61	MARINe	26	"arthropoda, HOP"	yes	temporal		
+61	MARINe	27	"arthropoda, MCR"	yes	temporal		
+61	MARINe	28	"arthropoda, MOL"	yes	temporal		
+61	MARINe	29	"arthropoda, PBL"	yes	temporal		
+61	MARINe	30	"arthropoda, PIN"	yes	temporal		
+61	MARINe	31	"arthropoda, PSN"	yes	temporal		
+61	MARINe	32	"arthropoda, PTL"	yes	temporal		
+61	MARINe	33	"arthropoda, SAD"	yes	temporal		
+61	MARINe	34	"arthropoda, SCT"	yes	temporal		
+61	MARINe	35	"arthropoda, SHB"	yes	temporal		
+61	MARINe	36	"arthropoda, SIM"	yes	temporal		
+61	MARINe	37	"arthropoda, SSP"	yes	temporal		
+61	MARINe	38	"arthropoda, STA"	yes	temporal		
+61	MARINe	39	"arthropoda, SWC"	yes	temporal		
+61	MARINe	40	"arthropoda, TPT"	yes	temporal		
+61	MARINe	41	"mollusca, DAV"	yes	temporal		
+61	MARINe	42	"mollusca, GAR"	yes	temporal		
+61	MARINe	43	"mollusca, HOP"	yes	temporal		
+61	MARINe	44	"mollusca, NAT"	yes	temporal		
+61	MARINe	45	"mollusca, PBL"	yes	temporal		
+61	MARINe	46	"mollusca, PIN"	yes	temporal		
+61	MARINe	47	"mollusca, PSN"	yes	temporal		
+61	MARINe	48	"mollusca, PTL"	yes	temporal		
+61	MARINe	49	"mollusca, SCT"	yes	temporal		
+61	MARINe	50	"mollusca, SIM"	yes	temporal		
+61	MARINe	51	"mollusca, TPT"	yes	temporal		
+61	MARINe	52	"mollusca, WIL"	yes	temporal		
+61	MARINe	53	"mollusca, MOL"	yes	temporal		
+61	MARINe	54	"mollusca, SWC"	yes	temporal		
+61	MARINe	55	"mollusca, MCR"	yes	temporal		
+61	MARINe	56	"mollusca, BOA"	yes	temporal		
+61	MARINe	57	"mollusca, CAY"	yes	temporal		
+61	MARINe	58	"mollusca, CHI"	yes	temporal		
+61	MARINe	59	"mollusca, DIA"	yes	temporal		
+61	MARINe	60	"mollusca, GPT"	yes	temporal		
+61	MARINe	61	"mollusca, HAZ"	yes	temporal		
+61	MARINe	62	"mollusca, OCC"	yes	temporal		
+61	MARINe	63	"mollusca, SAD"	yes	temporal		
+61	MARINe	64	"mollusca, SHB"	yes	temporal		
+61	MARINe	65	"mollusca, SSP"	yes	temporal		
+61	MARINe	66	"mollusca, STA"	yes	temporal		
+62	Portal	1	rodents	yes	temporal		
