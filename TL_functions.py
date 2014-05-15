@@ -71,6 +71,7 @@ def get_var_for_Q_N(q, n, sample_size, t_limit, analysis):
 def TL_analysis(data, study, sample_size = 1000, t_limit = 7200, analysis = 'partition'):
     """Compare empirical TL relationship of one dataset to that obtained from random partitions or compositions."""
     data_study = data[data['study'] == study]
+    data_study = data_study[data_study['N'] > 2] # Remove Q-N combos with N = 2
     var_parts = []
     for combo in data_study:
         q = combo[1]
@@ -122,6 +123,7 @@ def TL_analysis(data, study, sample_size = 1000, t_limit = 7200, analysis = 'par
 def inclusion_criteria(dat_study, sig = False):
     """Criteria that datasets need to meet to be included in the analysis"""
     b, inter, rval, pval, std_err = stats.linregress(np.log(dat_study['mean']), np.log(dat_study['var']))
+    dat_study = dat_study[dat_study['N'] > 2] # Doesn't make too much sense to talk about variance among two points
     if len(dat_study) >= 5: # More than 5 observations
         if len(dat_study[dat_study['Q'] > 5]) / len(dat_study) >= 0.5: # Not predominantly small values
             if ((not sig) or (pval < 0.05)): # If significance is not required, or if the relationship is significant
