@@ -39,8 +39,8 @@ Source	Paper	sp_id	sp	ecological	type	significance
 11	Sallam.etal_BioControl_2007	3	depth 3				
 11	Sallam.etal_BioControl_2007	4	depth 4				
 13	McMahon.etal_MammalRev_2005	1	M.leonina				
-14	Sileshi$Mafongoya_ICRAF_2004	1	Diaecoderus spp.	yes	spatial	yes	
-15	Clarke.etal_FreshwaterBiol_2002	1	S3	yes	neither	yes	
+14	Sileshi&Mafongoya_ICRAF_2004	1	Diaecoderus spp.	yes	spatial	yes	
+15	Clarke.etal_FreshwaterBiol_2002	1	S3	yes	spatial	yes	
 16	Silva.etal_EnvEnto_2003	1	P.unipuncta	yes	spatial	yes	
 17	Parker.etal_TurkJAricFor_2002	1	tot1	yes	spatial	yes	
 17	Parker.etal_TurkJAricFor_2002	2	tot2	yes	spatial	yes	
@@ -78,7 +78,7 @@ Source	Paper	sp_id	sp	ecological	type	significance
 28	Crawley&Weiner_JAppliedEcol_1991	1	shoot weight January	yes	spatial	yes	weight
 28	Crawley&Weiner_JAppliedEcol_1991	2	shoot weight May	yes	spatial	yes	weight
 28	Crawley&Weiner_JAppliedEcol_1991	3	shoot weight August	yes	spatial	unsure	weight
-29	vanDamme&Hamerlynck_JFishBiol_1992	1	Lernaeocera branchialis				
+29	vanDamme&Hamerlynck_JFishBiol_1992	1	fish				
 30	Warren&Linit_Jnematology_1992	1	B.xylophilus on beetle-infested pine 	yes	spatial	yes	
 30	Warren&Linit_Jnematology_1992	2	B.xylophilus on noninfested pine 	yes	spatial	yes	
 31	Rosewell.etal_JAniEcol_1990	1	field experiments	yes	spatial	yes	
