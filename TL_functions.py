@@ -28,6 +28,12 @@ def get_QN_mean_var_data(data_dir):
                          names = ['study', 'Q', 'N', 'mean', 'var'])
     return data
 
+def get_study_info(data_dir):
+    """Read in data file with study, taxon, and type"""
+    data = np.genfromtxt(data_dir, dtype = 'S25, S25, S25', delimiter = '\t',
+                          names = ['study', 'taxon', 'type'])
+    return data
+
 def RandomComposition_weak_xx(q, n):
     indices = sorted(np.random.randint(0, q, n - 1))
     parts = [(indices + [q])[i] - ([0] + indices)[i] for i in range(len(indices)+1)]
