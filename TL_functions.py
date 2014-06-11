@@ -74,6 +74,35 @@ def get_var_for_Q_N(q, n, sample_size, t_limit, analysis):
         print 'Timed out!'
         return QN_var
 
+def sample_var(data, study, sample_size = 1000, t_limit = 7200, analysis = 'partition'):
+    """Obtain and record the variance of partition or composition samples.
+    
+    Input:
+    data - data list read in with get_QN_mean_var_data()
+    study - ID of study
+    sample_size - number of samples to be drawn, default value is 1000
+    t_limit - abort sampling procedure for one Q-N combo after t_limit seconds, default value is 7200 (2 hours)
+    analysis - partition or composition
+    
+    """
+    data_study = data[data['study'] == study]
+    var_parts = []
+    for record in data_study:
+        q = record[1]
+        n = record[2]
+        out_row = [x for x in record]
+        QN_var = get_var_for_Q_N(q, n, sample_size, t_limit, analysis)
+        if len(QN_var) == sample_size:
+            out_row.extend(QN_var)
+            var_parts.append(out_row)
+        else: break # Break out of for-loop if a Q-N combo is skipped
+    
+    if len(data_study) == len(var_parts): # If no QN combos are omitted, print to file
+        out_write_var = open('taylor_QN_var_predicted_' + analysis + '_full.txt', 'a')
+        for var_row in var_parts:
+            print>>out_write_var, '\t'.join([str(x) for x in var_row])
+        out_write_var.close()
+
 def TL_analysis(data, study, sample_size = 1000, t_limit = 7200, analysis = 'partition'):
     """Compare empirical TL relationship of one dataset to that obtained from random partitions or compositions."""
     data_study = data[data['study'] == study]
