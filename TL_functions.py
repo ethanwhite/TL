@@ -103,6 +103,11 @@ def sample_var(data, study, sample_size = 1000, t_limit = 7200, analysis = 'part
             print>>out_write_var, '\t'.join([str(x) for x in var_row])
         out_write_var.close()
 
+def get_z_score(emp_var, sim_var_list):
+    """Return the z-score as a measure of the discrepancy between empirical and sample variance"""
+    sd_sim = (np.var(sim_var_list, ddof = 1)) ** 0.5
+    return (emp_var - np.mean(sim_var_list)) / sd_sim
+    
 def TL_analysis(data, study, sample_size = 1000, t_limit = 7200, analysis = 'partition'):
     """Compare empirical TL relationship of one dataset to that obtained from random partitions or compositions."""
     data_study = data[data['study'] == study]
