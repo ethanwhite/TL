@@ -1,5 +1,8 @@
 """Module with functions to carry out analyses for the TL project"""
 from __future__ import division, with_statement
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 import partitions as parts
 import numpy as np
 from scipy import stats
@@ -214,3 +217,33 @@ def inclusion_criteria(dat_study, sig = False):
             if ((not sig) or (pval < 0.05)): # If significance is not required, or if the relationship is significant
                 return True
     else: return False
+
+def plot_obs_expc(obs, expc, expc_upper, expc_lower, loglog, ax = None):
+    """Generic function to generate an observed vs expected figure with 1:1 line, 
+    
+    with obs on the x-axis, expected on the y-axis, and shading for CI of expected.
+    Input: 
+    obs - list of observed values
+    expc - list of expected values, the same length as obs
+    expc_upper - list of the upper percentile of expected values, the same length as obs
+    expc_lower - list of the lower percentile of expected values, the same length as obs
+    
+    """
+    if not ax:
+        fig = plt.figure(figsize = (3.5, 3.5))
+        ax = plt.subplot(111)
+    
+    if loglog:
+        axis_min = 0.9 * min(list(obs[obs > 0]) + list(expc[expc > 0]))
+        axis_max = 3 * max(list(obs)+list(expc))
+    else:
+        axis_min = 0.9 * min(list(obs) + list(expc))
+        axis_max = 1.1 * max(list(obs)+list(expc))
+        
+    plt.fill_between(obs, expc_lower, expc_upper, color = '#FFB6C1')
+    plt.scatter(obs, expc, c = '#FF4500')
+    plt.plot([axis_min, axis_max],[axis_min, axis_max], 'k-')
+    plt.xlim(axis_min, axis_max)
+    plt.ylim(axis_min, axis_max)
+    ax.tick_params(axis = 'both', which = 'major', labelsize = 6)
+    return ax
