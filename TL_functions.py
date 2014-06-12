@@ -116,7 +116,43 @@ def get_z_score(emp_var, sim_var_list):
     """Return the z-score as a measure of the discrepancy between empirical and sample variance"""
     sd_sim = (np.var(sim_var_list, ddof = 1)) ** 0.5
     return (emp_var - np.mean(sim_var_list)) / sd_sim
+ 
+def TL_from_sample(dat_sample, analysis = 'partition'):
+    """Obtain the empirical and simulated TL relationship given the output file from sample_var().
     
+    Here only the summary statistics are recorded for each study, instead of results from each 
+    individual sample, because the analysis can be quickly re-done given the input file, without
+    going through the time-limiting step of generating samples from partitions.
+    The input dat_sample is in the same format as defined by get_var_sample_file().
+    The output file has the following columns: 
+    study, empirical b, empirical intercept, empirical R-squared, empirical p-value, mean b, intercept, R-squared from samples, 
+    percentage of significant TL in samples (at alpha = 0.05), z-score between empirical and sample b, 2.5 and 97.5 percentile of sample b,
+    z-score between empirical and sample intercept, 2.5 and 97.5 percentile of sample intercept.
+    
+    """
+    study_list = sorted(np.unique(dat_sample['study']))
+    for study in study_list:
+        dat_study = dat_sample[dat_sample['study'] == study]
+        emp_b, emp_inter, emp_r, emp_p, emp_std_err = stats.lineregress(np.log(dat_study['mean']), np.log(dat_study['var']))
+        b_list = []
+        inter_list = []
+        psig = 0
+        R2_list = []
+        for i_sim in dat_sample.dtype.names[5:]:
+            var_sim = dat_study[i_sim][dat_study[i_sim] > 0] # Omit samples of zero variance 
+            mean_list = dat_study['mean'][dat_study[i_sim] > 0]
+            sim_b, sim_inter, sim_r, sim_p, sim_std_error = stats.lineregress(np.log(mean_list), np.log(var_sim))
+            b_list.append(sim_b)
+            inter_list.append(sim_inter)
+            R2_list.append(sim_r ** 2)
+            if sim_p < 0.05: psig += 1
+        psig /= len(at_sample.dtype.names[5:])
+        out_file = open('TL_form_' + analysis + '.txt', 'a')
+        print>>out_file, study, emp_b, emp_inter, emp_r ** 2, emp_p, np.mean(b_list), np.mean(inter_list), np.mean(R2_list), \
+             psig, get_z_score(emp_b, b_list), np.percentile(b_list, 2.5), np.percentile(b_list, 97.5), get_z_score(emp_inter, inter_list), \
+             np.percentile(inter_list, 2.5), np.percentile(inter_list, 97.5)
+        out_file.close()
+
 def TL_analysis(data, study, sample_size = 1000, t_limit = 7200, analysis = 'partition'):
     """Compare empirical TL relationship of one dataset to that obtained from random partitions or compositions."""
     data_study = data[data['study'] == study]
