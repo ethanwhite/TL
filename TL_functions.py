@@ -229,19 +229,33 @@ def plot_obs_expc(obs, expc, expc_upper, expc_lower, loglog, ax = None):
     expc_lower - list of the lower percentile of expected values, the same length as obs
     
     """
+    obs, expc, expc_upper, expc_lower = list(obs), list(expc), list(expc_upper), list(expc_lower)
     if not ax:
         fig = plt.figure(figsize = (3.5, 3.5))
         ax = plt.subplot(111)
     
     if loglog:
-        axis_min = 0.9 * min(list(obs[obs > 0]) + list(expc[expc > 0]))
-        axis_max = 3 * max(list(obs)+list(expc))
+        axis_min = 0.9 * min([x for x in obs if x > 0] + [y for y in expc if y > 0])
+        axis_max = 3 * max(obs + expc)
+        ax.set_xscale('log')
+        ax.set_yscale('log')        
     else:
-        axis_min = 0.9 * min(list(obs) + list(expc))
-        axis_max = 1.1 * max(list(obs)+list(expc))
-        
-    plt.fill_between(obs, expc_lower, expc_upper, color = '#FFB6C1')
-    plt.scatter(obs, expc, c = '#FF4500')
+        axis_min = 0.9 * min(obs + expc)
+        axis_max = 1.1 * max(obs + expc)
+
+    # Sort all lists with respect to obs
+    index = sorted(range(len(obs)), key = lambda k: obs[k])
+    expc = [expc[i] for i in index]
+    expc_upper = [expc_upper[i] for i in index]
+    expc_lower = [expc_lower[i] for i in index]
+    obs = [obs[i] for i in index]
+     
+    # Replace zeros in expc_lower with the minimal value above zero for the purpose of plotting
+    expc_lower_min = min([x for x in expc_lower if x > 0])
+    expc_lower = [expc_lower_min if x == 0 else x for x in expc_lower]
+    
+    plt.fill_between(obs, expc_lower, expc_upper, color = '#87CEFA')
+    plt.scatter(obs, expc, c = '#4876FF',  edgecolors='none')
     plt.plot([axis_min, axis_max],[axis_min, axis_max], 'k-')
     plt.xlim(axis_min, axis_max)
     plt.ylim(axis_min, axis_max)
