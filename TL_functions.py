@@ -47,8 +47,8 @@ def get_var_sample_file(data_dir, sample_size = 1000):
     names_data = ['study', 'Q', 'N', 'mean', 'var']
     names_sample = ['sample'+str(i) for i in xrange(1, sample_size + 1)]
     names_data.extend(names_sample)
-    type_data = 'S15' + 'i15' + 'i15' + ',<f8'*(len(names_data) - 3)
-    data = np.genfromtxt(data_dir, delimiter = '\t', names = names_data)
+    type_data = 'S15, i15, i15' + ',<f8'*(len(names_data) - 3)
+    data = np.genfromtxt(data_dir, delimiter = '\t', names = names_data, dtype = type_data)
     return data
 
 def RandomComposition_weak_xx(q, n):
