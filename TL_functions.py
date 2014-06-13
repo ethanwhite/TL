@@ -11,6 +11,11 @@ import csv
 import signal
 from contextlib import contextmanager
 
+# Define constants
+Q_MIN = 5 # Minimal Q for a (Q, N) combo to be included 
+N_MIN = 3 # Minimal N for a (Q, N) combo to be included
+n_MIN = 5 # Minimal number of valid points in a study to be included 
+
 class TimeoutException(Exception): pass
 
 @contextmanager
@@ -211,11 +216,10 @@ def TL_analysis(data, study, sample_size = 1000, t_limit = 7200, analysis = 'par
 def inclusion_criteria(dat_study, sig = False):
     """Criteria that datasets need to meet to be included in the analysis"""
     b, inter, rval, pval, std_err = stats.linregress(np.log(dat_study['mean']), np.log(dat_study['var']))
-    dat_study = dat_study[dat_study['N'] > 2] # Doesn't make too much sense to talk about variance among two points
-    if len(dat_study) >= 5: # More than 5 observations
-        if len(dat_study[dat_study['Q'] > 5]) / len(dat_study) >= 0.5: # Not predominantly small values
-            if ((not sig) or (pval < 0.05)): # If significance is not required, or if the relationship is significant
-                return True
+    dat_study = dat_study[(dat_study['N'] >= N_MIN) * (dat_study['Q'] >= Q_MIN)]
+    if len(dat_study) >= n_MIN: 
+        if ((not sig) or (pval < 0.05)): # If significance is not required, or if the relationship is significant
+            return True
     else: return False
 
 def plot_obs_expc(obs, expc, expc_upper, expc_lower, loglog, ax = None):
