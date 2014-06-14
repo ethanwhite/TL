@@ -51,7 +51,7 @@ def get_var_sample_file(data_dir, sample_size = 1000):
     data = np.genfromtxt(data_dir, delimiter = '\t', names = names_data, dtype = type_data)
     return data
 
-def RandomComposition_weak_xx(q, n):
+def RandomComposition_weak(q, n):
     indices = sorted(np.random.randint(0, q, n - 1))
     parts = [(indices + [q])[i] - ([0] + indices)[i] for i in range(len(indices)+1)]
     return parts
