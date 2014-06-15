@@ -273,3 +273,30 @@ def plot_obs_expc(obs, expc, expc_upper, expc_lower, obs_type, loglog, ax = None
     plt.ylim(axis_min, axis_max)
     ax.tick_params(axis = 'both', which = 'major', labelsize = 6)
     return ax
+
+def plot_mean_var(mean, obs_var, expc_var, obs_type, loglog = True, ax = None):
+    """Plot the observed and expected variance against mean, distinguishing 
+    
+    between spatial and temporal data.
+    
+    """
+    mean, obs_var, expc_var = list(mean), list(obs_var), list(expc_var)
+    if not ax:
+        fig = plt.figure(figsize = (3.5, 3.5))
+        ax = plt.subplot(111)
+    
+    if loglog:
+        ax.set_xscale('log')
+        ax.set_yscale('log')        
+    
+    i_spac = [i for i, x in enumerate(obs_type) if x == 'spatial']
+    i_temp = [i for i, x in enumerate(obs_type) if x == 'temporal']
+    
+    plt.scatter([mean[i] for i in i_spac], [obs_var[i] for i in i_spac], c = '#EE4000',  edgecolors='none', alpha = 0.5, s = 8)
+    plt.scatter([mean[i] for i in i_temp], [obs_var[i] for i in i_temp], c = '#1C86EE',  edgecolors='none', alpha = 0.5, s = 8)
+    plt.scatter(mean, expc_var, c = 'black', edgecolors = 'none', alpha = 0.5, s = 8)
+    ax.tick_params(axis = 'both', which = 'major', labelsize = 6)
+    plt.xlabel('Mean', fontsize = 8)
+    plt.ylabel('Variance', fontsize = 8)
+    return ax
+    
