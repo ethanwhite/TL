@@ -141,7 +141,7 @@ def TL_from_sample(dat_sample, analysis = 'partition'):
     study_list = sorted(np.unique(dat_sample['study']))
     for study in study_list:
         dat_study = dat_sample[dat_sample['study'] == study]
-        emp_b, emp_inter, emp_r, emp_p, emp_std_err = stats.lineregress(np.log(dat_study['mean']), np.log(dat_study['var']))
+        emp_b, emp_inter, emp_r, emp_p, emp_std_err = stats.linregress(np.log(dat_study['mean']), np.log(dat_study['var']))
         b_list = []
         inter_list = []
         psig = 0
@@ -149,12 +149,12 @@ def TL_from_sample(dat_sample, analysis = 'partition'):
         for i_sim in dat_sample.dtype.names[5:]:
             var_sim = dat_study[i_sim][dat_study[i_sim] > 0] # Omit samples of zero variance 
             mean_list = dat_study['mean'][dat_study[i_sim] > 0]
-            sim_b, sim_inter, sim_r, sim_p, sim_std_error = stats.lineregress(np.log(mean_list), np.log(var_sim))
+            sim_b, sim_inter, sim_r, sim_p, sim_std_error = stats.linregress(np.log(mean_list), np.log(var_sim))
             b_list.append(sim_b)
             inter_list.append(sim_inter)
             R2_list.append(sim_r ** 2)
             if sim_p < 0.05: psig += 1
-        psig /= len(at_sample.dtype.names[5:])
+        psig /= len(dat_sample.dtype.names[5:])
         out_file = open('TL_form_' + analysis + '.txt', 'a')
         print>>out_file, study, emp_b, emp_inter, emp_r ** 2, emp_p, np.mean(b_list), np.mean(inter_list), np.mean(R2_list), \
              psig, get_z_score(emp_b, b_list), np.percentile(b_list, 2.5), np.percentile(b_list, 97.5), get_z_score(emp_inter, inter_list), \
