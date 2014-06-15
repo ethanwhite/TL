@@ -222,7 +222,7 @@ def inclusion_criteria(dat_study, sig = False):
             return True
     else: return False
 
-def plot_obs_expc(obs, expc, expc_upper, expc_lower, loglog, ax = None):
+def plot_obs_expc(obs, expc, expc_upper, expc_lower, obs_type, loglog, ax = None):
     """Generic function to generate an observed vs expected figure with 1:1 line, 
     
     with obs on the x-axis, expected on the y-axis, and shading for CI of expected.
@@ -231,6 +231,9 @@ def plot_obs_expc(obs, expc, expc_upper, expc_lower, loglog, ax = None):
     expc - list of expected values, the same length as obs
     expc_upper - list of the upper percentile of expected values, the same length as obs
     expc_lower - list of the lower percentile of expected values, the same length as obs
+    obs_type - list of the same length of obs, specifying whether each obs is spatial (red) or temporal (blue)
+    loglog - whether both axes are to be transformed
+    ax - whether the plot is generated on a given figure, or a new plot object is to be created
     
     """
     obs, expc, expc_upper, expc_lower = list(obs), list(expc), list(expc_upper), list(expc_lower)
@@ -253,13 +256,18 @@ def plot_obs_expc(obs, expc, expc_upper, expc_lower, loglog, ax = None):
     expc_upper = [expc_upper[i] for i in index]
     expc_lower = [expc_lower[i] for i in index]
     obs = [obs[i] for i in index]
+    obs_type = [obs_type[i] for i in index]
      
     # Replace zeros in expc_lower with the minimal value above zero for the purpose of plotting
     expc_lower_min = min([x for x in expc_lower if x > 0])
     expc_lower = [expc_lower_min if x == 0 else x for x in expc_lower]
     
-    plt.fill_between(obs, expc_lower, expc_upper, color = '#87CEFA')
-    plt.scatter(obs, expc, c = '#4876FF',  edgecolors='none')
+    i_spac = [i for i, x in enumerate(obs_type) if x == 'spatial']
+    i_temp = [i for i, x in enumerate(obs_type) if x == 'temporal']
+    
+    plt.fill_between(obs, expc_lower, expc_upper, color = '#FF83FA', alpha = 0.5)
+    plt.scatter([obs[i] for i in i_spac], [expc[i] for i in i_spac], c = '#EE4000',  edgecolors='none', alpha = 0.5, s = 8)
+    plt.scatter([obs[i] for i in i_temp], [expc[i] for i in i_temp], c = '#1C86EE',  edgecolors='none', alpha = 0.5, s = 8)   
     plt.plot([axis_min, axis_max],[axis_min, axis_max], 'k-')
     plt.xlim(axis_min, axis_max)
     plt.ylim(axis_min, axis_max)
