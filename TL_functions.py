@@ -178,7 +178,9 @@ def aicc_nls_ls(list_of_mean, list_of_var):
                                         scale = a_nls * (mean_no_zero ** b_nls)))
     l_ls = np.sum(stats.lognorm.logpdf(var_no_zero, s2_ls ** 0.5, \
                                        scale = np.exp(inter0 + b0 * np.log(mean_no_zero))))
-    delta_AICc = AICc(3, l_nls, len(var_no_zero)) - AICc(3, l_ls, len(var_no_zero))
+    try:
+        delta_AICc = AICc(3, l_nls, len(var_no_zero)) - AICc(3, l_ls, len(var_no_zero))
+    except: delta_AICc = 0
     return delta_AICc
 
 def TL_from_sample(dat_sample, analysis = 'partition'):
