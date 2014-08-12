@@ -159,7 +159,10 @@ def fit_nls(list_of_mean, list_of_var):
     b0, inter0, r, p, std_error = stats.linregress(np.log(mean_no_zero), np.log(var_no_zero))
     def func_power(x, a, b):
         return a * (x ** b)
-    popt, pcov = scipy.optimize.curve_fit(func_power, mean_no_zero, var_no_zero, p0 = (np.exp(inter0), b0))
+    try:
+        popt, pcov = scipy.optimize.curve_fit(func_power, mean_no_zero, var_no_zero, p0 = (np.exp(inter0), b0))
+    except:
+        popt = [np.exp(inter0), b0] # If failed to converge, retain parameters from linear regression
     residuals = var_no_zero - func_power(mean_no_zero, popt[0], popt[1])
     s2 = np.var(residuals, ddof = 1)
     return popt[0], popt[1], s2
