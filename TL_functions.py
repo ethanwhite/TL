@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import partitions as parts
 import numpy as np
 from scipy import stats
+import scikits.statsmodels.api as sm
 import random
 import csv
 import signal
@@ -132,7 +133,18 @@ def get_z_score(emp_var, sim_var_list):
     """Return the z-score as a measure of the discrepancy between empirical and sample variance"""
     sd_sim = (np.var(sim_var_list, ddof = 1)) ** 0.5
     return (emp_var - np.mean(sim_var_list)) / sd_sim
- 
+
+def quadratic_term(list_of_mean, list_of_var):
+    """Fit a quadratic term and return its p-value"""
+    # Remove records with 0 variance
+    log_var = [np.log(x) for x in list_of_var if x > 0]
+    log_mean = [np.log(list_of_mean[i]) for i in range(list_of_mean) if list_of_var[i] > 0]
+    log_mean_quad = [x ** 2 for x in log_mean]
+    indep_var = np.column_stack(log_mean, log_mean_quad)
+    indep_var = sm.add_constant(indep_var, prepend = True)
+    quad_res = sm.OLS(log_var, indep_var).fit()
+    return quad_res.pvalues[2]
+
 def TL_from_sample(dat_sample, analysis = 'partition'):
     """Obtain the empirical and simulated TL relationship given the output file from sample_var().
     
@@ -230,6 +242,7 @@ def inclusion_criteria(dat_study, sig = False):
             return True
     else: return False
 
+# Below are functions for plotting
 def plot_obs_expc(obs, expc, expc_upper, expc_lower, obs_type, loglog, ax = None):
     """Generic function to generate an observed vs expected figure with 1:1 line, 
     
@@ -276,6 +289,56 @@ def plot_obs_expc(obs, expc, expc_upper, expc_lower, obs_type, loglog, ax = None
     plt.fill_between(obs, expc_lower, expc_upper, color = '#FF83FA', alpha = 0.5)
     plt.scatter([obs[i] for i in i_spac], [expc[i] for i in i_spac], c = '#EE4000',  edgecolors='none', alpha = 0.5, s = 8)
     plt.scatter([obs[i] for i in i_temp], [expc[i] for i in i_temp], c = '#1C86EE',  edgecolors='none', alpha = 0.5, s = 8)   
+    plt.plot([axis_min, axis_max],[axis_min, axis_max], 'k-')
+    plt.xlim(axis_min, axis_max)
+    plt.ylim(axis_min, axis_max)
+    ax.tick_params(axis = 'both', which = 'major', labelsize = 6)
+    return ax
+
+def plot_obs_expc_alt(obs, expc, obs_type, loglog, ax = None):
+    """Alternative visual representation of the obs-expc plot, with not CI range but each dot plotted
+    
+    semi-transparently to illustrate the heat of different values. 
+    Input: 
+    obs - list of observed values
+    expc - list of lists of expected values, each sublist is of the same length as obs, the number of sublists equal sample size 
+    obs_type - list of the same length of obs, specifying whether each obs is spatial (red) or temporal (blue)
+    loglog - whether both axes are to be transformed
+    ax - whether the plot is generated on a given figure, or a new plot object is to be created
+    
+    """
+    obs = list(obs)
+    n_sample = len(expc)
+    if not ax:
+        fig = plt.figure(figsize = (3.5, 3.5))
+        ax = plt.subplot(111)
+    
+    if loglog:
+        expc_above_zero = [[x for x in sublist if x > 0] for sublist in expc]
+        axis_min = 0.9 * np.min(expc_above_zero)
+        axis_max = 3 * np.max(expc)
+        ax.set_xscale('log')
+        ax.set_yscale('log')        
+    else:
+        axis_min = 0.9 * np.min(expc)
+        axis_max = 1.1 * np.max(expc)
+
+    # Sort all lists with respect to obs
+    index = sorted(range(len(obs)), key = lambda k: obs[k])
+    expc = [expc[i] for i in index]
+    expc_upper = [expc_upper[i] for i in index]
+    expc_lower = [expc_lower[i] for i in index]
+    obs = [obs[i] for i in index]
+    obs_type = [obs_type[i] for i in index]
+     
+    # Replace zeros in expc_lower with the minimal value above zero for the purpose of plotting   
+    i_spac = [i for i, x in enumerate(obs_type) if x == 'spatial']
+    i_temp = [i for i, x in enumerate(obs_type) if x == 'temporal']
+     
+    for j in range(n_sample):  
+        expc_sample = expc[j]
+        plt.scatter([obs[i] for i in i_spac], [expc_sample[i] for i in i_spac], c = '#EE4000',  edgecolors='none', alpha = 1 / n_sample * 10, s = 8)
+        plt.scatter([obs[i] for i in i_temp], [expc_sample[i] for i in i_temp], c = '#1C86EE',  edgecolors='none', alpha = 1 / n_sample * 10, s = 8)   
     plt.plot([axis_min, axis_max],[axis_min, axis_max], 'k-')
     plt.xlim(axis_min, axis_max)
     plt.ylim(axis_min, axis_max)
