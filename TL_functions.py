@@ -174,8 +174,8 @@ def aicc_nls_ls(list_of_mean, list_of_var):
     b0, inter0, r, p, std_error = stats.linregress(np.log(mean_no_zero), np.log(var_no_zero))
     s2_ls = np.var(np.log(var_no_zero) - inter0 - b0 * np.log(mean_no_zero), ddof = 1)
     a_nls, b_nls, s2_nls = fit_nls(mean_no_zero, var_no_zero)
-    l_nls = np.sum(stats.norm.logpdf(var_no_zero, s2_nls ** 0.5, \
-                                        scale = a_nls * (mean_no_zero ** b_nls)))
+    l_nls = np.sum(stats.norm.logpdf(var_no_zero, scale = s2_nls ** 0.5, \
+                                        loc = a_nls * (mean_no_zero ** b_nls)))
     l_ls = np.sum(stats.lognorm.logpdf(var_no_zero, s2_ls ** 0.5, \
                                        scale = np.exp(inter0 + b0 * np.log(mean_no_zero))))
     try:
