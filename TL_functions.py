@@ -5,6 +5,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import partitions as parts
 import numpy as np
+import scipy
 from scipy import stats
 import scikits.statsmodels.api as sm
 import random
@@ -144,7 +145,25 @@ def quadratic_term(list_of_mean, list_of_var):
     indep_var = sm.add_constant(indep_var, prepend = True)
     quad_res = sm.OLS(log_var, indep_var).fit()
     return quad_res.pvalues[2]
+
+def fit_nls(list_of_mean, list_of_var): 
+    """Apply nonlinear regression instead of linear regression on log scale
     
+    and return parameter estimates for a, b, and sigma^2.
+    
+    """
+    # Remove zero from var
+    var_no_zero = np.array([x for x in list_of_var if x > 0])
+    mean_no_zero = np.array([list_of_mean[i] for i in range(len(list_of_mean)) if list_of_var[i] > 0])
+    b0, inter0, r, p, std_error = stats.linregress(np.log(mean_no_zero), np.log(var_no_zero))
+    def func_power(x, a, b):
+        return a * (x ** b)
+    popt, pcov = scipy.optimize.curve_fit(func_power, np.array(mean_no_zero),\
+                                          np.array(var_no_zero), p0 = (np.exp(inter0), b0))
+    residuals = np.array(var_no_zero) - func_power(np.array(mean_no_zero), popt[0], popt[1])
+    s2 = np.var(residuals, ddof = 1)
+    return popt[0], popt[1], s2
+
 def TL_from_sample(dat_sample, analysis = 'partition'):
     """Obtain the empirical and simulated TL relationship given the output file from sample_var().
     
