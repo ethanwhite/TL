@@ -138,13 +138,13 @@ def quadratic_term(list_of_mean, list_of_var):
     """Fit a quadratic term and return its p-value"""
     # Remove records with 0 variance
     log_var = [np.log(x) for x in list_of_var if x > 0]
-    log_mean = [np.log(list_of_mean[i]) for i in range(list_of_mean) if list_of_var[i] > 0]
+    log_mean = [np.log(list_of_mean[i]) for i in range(len(list_of_mean)) if list_of_var[i] > 0]
     log_mean_quad = [x ** 2 for x in log_mean]
-    indep_var = np.column_stack(log_mean, log_mean_quad)
+    indep_var = np.column_stack((log_mean, log_mean_quad))
     indep_var = sm.add_constant(indep_var, prepend = True)
     quad_res = sm.OLS(log_var, indep_var).fit()
     return quad_res.pvalues[2]
-
+    
 def TL_from_sample(dat_sample, analysis = 'partition'):
     """Obtain the empirical and simulated TL relationship given the output file from sample_var().
     
@@ -181,6 +181,27 @@ def TL_from_sample(dat_sample, analysis = 'partition'):
              np.percentile(inter_list, 2.5), np.percentile(inter_list, 97.5)
         out_file.close()
 
+def get_quadratic_sig_data(dat_sample, analysis = 'partition'):
+    """Compute the p-value of the quadratic term for each dataset
+    
+    as well as all of its partitions/compositions and write results to file.
+    
+    """
+    study_list = sorted(np.unique(dat_sample['study']))
+    for study in study_list:
+        p_list = []
+        dat_study = dat_sample[dat_sample['study'] == study]
+        emp_quad_p = quadratic_term(dat_study['mean'], dat_study['var'])
+        p_list.append(emp_quad_p)
+        for i_sim in dat_sample.dtype.names[5:]:
+            var_sim = dat_study[i_sim][dat_study[i_sim] > 0] # Omit samples of zero variance 
+            mean_list = dat_study['mean'][dat_study[i_sim] > 0]
+            sim_quad_p = quadratic_term(mean_list, var_sim)
+            p_list.append(sim_quad_p)
+        out_file = open('TL_quad_p_' + analysis + '.txt', 'a')
+        print>>out_file, study, '\t'.join(map(str, p_list))
+        out_file.close()
+    
 def TL_analysis(data, study, sample_size = 1000, t_limit = 7200, analysis = 'partition'):
     """Compare empirical TL relationship of one dataset to that obtained from random partitions or compositions."""
     data_study = data[data['study'] == study]
