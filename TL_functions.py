@@ -164,7 +164,7 @@ def fit_nls(list_of_mean, list_of_var):
     s2 = np.var(residuals, ddof = 1)
     return popt[0], popt[1], s2
 
-def comp_ls_nls(list_of_mean, list_of_var):
+def aicc_nls_ls(list_of_mean, list_of_var):
     """Return the difference in AICc values between the nonlinear and loglinear models"""
     var_no_zero = np.array([x for x in list_of_var if x > 0])
     mean_no_zero = np.array([list_of_mean[i] for i in range(len(list_of_mean)) if list_of_var[i] > 0])
@@ -233,6 +233,23 @@ def get_quadratic_sig_data(dat_sample, analysis = 'partition'):
             p_list.append(sim_quad_p)
         out_file = open('TL_quad_p_' + analysis + '.txt', 'a')
         print>>out_file, study, '\t'.join(map(str, p_list))
+        out_file.close()
+
+def aicc_nls_ls_to_file(dat_sample, analysis = 'partition'):
+    """Obtain the delta-AICc for each empirical dataset and each of its simulations, then write to file"""
+    study_list = sorted(np.unique(dat_sample['study']))
+    for study in study_list:
+        aicc_list = []
+        dat_study = dat_sample[dat_sample['study'] == study]
+        aicc_emp = aicc_nls_ls(dat_study['mean'], dat_study['var'])
+        aicc_list.append(aicc_emp)
+        for i_sim in dat_sample.dtype.names[5:]:
+            var_sim = dat_study[i_sim][dat_study[i_sim] > 0] # Omit samples of zero variance 
+            mean_list = dat_study['mean'][dat_study[i_sim] > 0]
+            aicc_sim = aicc_nls_ls(mean_list, var_sim)
+            aicc_list.append(aicc_sim)
+        out_file = open('TL_AICc_' + analysis + '.txt', 'a')
+        print>>out_file, study, '\t'.join(map(str, aicc_list))
         out_file.close()
     
 def TL_analysis(data, study, sample_size = 1000, t_limit = 7200, analysis = 'partition'):
