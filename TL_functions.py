@@ -65,7 +65,7 @@ def get_val_ind_sample_file(data_dir, sample_size = 1000):
     names_sample = ['sample'+str(i) for i in xrange(1, sample_size + 1)]
     names_data.extend(names_sample)
     type_data = 'S15' + ',<f8'*(len(names_data) - 1)
-    data = np.genfromtxt(data_dir, delimiter = '\t', names = names_data, dtype = type_data)
+    data = np.genfromtxt(data_dir, delimiter = '\t', names = names_data, dtype = type_data, autostrip = True)
     return data
 
 def get_tl_par_file(data_dir):
@@ -295,6 +295,22 @@ def TL_from_sample_model_selection(dat_sample, analysis = 'partition'):
         out_file_r2.close()
         out_file_p.close()
           
+#def TL_from_sample_model_selection_python(dat_sample, analysis = 'partition'):
+    #"""Implement the same algorithm for model selection in python for speed"""
+    #aicc_file = get_val_ind_sample_file('TL_AICc_' + analysis + '.txt') 
+    #study_list = sorted(np.unique(dat_sample['study']))
+    #for study in study_list:
+        #dat_study = dat_sample[dat_sample['study'] == study]
+        #aicc_study = aicc_file[aicc_file['study'] == study][0]
+        #mean_list = dat_study['mean']
+        #for i in range(4, len(dat_sample.dtype.names) + 1):
+            #var_list = dat_study[dat_sample.dtype.names[i]]
+            #var_sample = np.array([x for x in var_list if x > 0]) # Remove records with zero var
+            #mean_sample = np.array([mean_list[j] for j in range(len(mean_list)) if var_list[j] > 0 ]) 
+            ## Model selection 
+            #if aicc_study[i - 3] > 2: # LR
+                #b, inter, r, p, std_error = stats.linregress(np.log(mean_sample), np.log(var_sample))
+                
 def get_quadratic_sig_data(dat_sample, analysis = 'partition'):
     """Compute the p-value of the quadratic term for each dataset
     
