@@ -12,6 +12,7 @@ import scikits.statsmodels.api as sm
 import random
 import csv
 import signal
+from pyper import *
 from contextlib import contextmanager
 
 # Define constants
@@ -232,6 +233,59 @@ def TL_from_sample(dat_sample, analysis = 'partition'):
              np.percentile(inter_list, 2.5), np.percentile(inter_list, 97.5)
         out_file.close()
 
+def call_R_power_analysis(list_of_mean, list_of_var):
+    """This function calls the R function power_analysis() 
+    
+    and returns estimates of exp(inter), b, and significance at alpha = 0.05.
+    
+    """
+    r = R()
+    r("source('Sup_2_Guidelines.r')")
+    var_no_zero = [x for x in list_of_var if x > 0]
+    mean_no_zero = [list_of_mean[i] for i in range(len(list_of_mean)) if list_of_var[i] > 0]
+    r.assign('x', mean_no_zero)
+    r.assign('y', var_no_zero)
+    r('out = power_analysis(x, y, diagno = F)')
+    out_lib = r.get('out')
+    b_CI = out_lib['b_confint']
+    if min(b_CI) < 0 < max(b_CI): sig = False
+    else: sig = True
+    return out_lib['a'], out_lib['b'], sig
+
+def TL_from_sample_model_selection(dat_sample, analysis = 'partition'):
+    """This function is similar to TL_from_sample(), except that model selection/averaging is adopted
+    
+    from Xiao et al. 2011.  It calls the R function power_analysis(). 
+    
+    """
+    r = R()
+    r("source('Sup_2_Guidelines.r')")
+    study_list = sorted(np.unique(dat_sample['study']))
+    for study in study_list:
+        dat_study = dat_sample[dat_sample['study'] == study]
+        mean_study = dat_study['mean']
+        var_study = dat_study['var']
+        
+        emp_b, emp_inter, emp_r, emp_p, emp_std_err = stats.linregress(np.log(dat_study['mean']), np.log(dat_study['var']))
+        b_list = []
+        inter_list = []
+        psig = 0
+        R2_list = []
+        for i_sim in dat_sample.dtype.names[5:]:
+            var_sim = dat_study[i_sim][dat_study[i_sim] > 0] # Omit samples of zero variance 
+            mean_list = dat_study['mean'][dat_study[i_sim] > 0]
+            sim_b, sim_inter, sim_r, sim_p, sim_std_error = stats.linregress(np.log(mean_list), np.log(var_sim))
+            b_list.append(sim_b)
+            inter_list.append(sim_inter)
+            R2_list.append(sim_r ** 2)
+            if sim_p < 0.05: psig += 1
+        psig /= len(dat_sample.dtype.names[5:])
+        out_file = open('TL_form_' + analysis + '.txt', 'a')
+        print>>out_file, study, emp_b, emp_inter, emp_r ** 2, emp_p, np.mean(b_list), np.mean(inter_list), np.mean(R2_list), \
+             psig, get_z_score(emp_b, b_list), np.percentile(b_list, 2.5), np.percentile(b_list, 97.5), get_z_score(emp_inter, inter_list), \
+             np.percentile(inter_list, 2.5), np.percentile(inter_list, 97.5)
+        out_file.close()
+          
 def get_quadratic_sig_data(dat_sample, analysis = 'partition'):
     """Compute the p-value of the quadratic term for each dataset
     
