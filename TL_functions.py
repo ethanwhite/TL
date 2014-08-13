@@ -241,8 +241,8 @@ def call_R_power_analysis(list_of_mean, list_of_var):
     """
     r = R()
     r("source('Sup_2_Guidelines.r')")
-    var_no_zero = [x for x in list_of_var if x > 0]
-    mean_no_zero = [list_of_mean[i] for i in range(len(list_of_mean)) if list_of_var[i] > 0]
+    var_no_zero = np.array([x for x in list_of_var if x > 0])
+    mean_no_zero = np.array([list_of_mean[i] for i in range(len(list_of_mean)) if list_of_var[i] > 0])
     r.assign('x', mean_no_zero)
     r.assign('y', var_no_zero)
     r('out = power_analysis(x, y, diagno = F)')
