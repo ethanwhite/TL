@@ -248,8 +248,8 @@ def call_R_power_analysis(list_of_mean, list_of_var):
     r('out = power_analysis(x, y, diagno = F)')
     out_lib = r.get('out')
     b_CI = out_lib['b_confint']
-    if min(b_CI) < 0 < max(b_CI): sig = False
-    else: sig = True
+    if min(b_CI) < 0 < max(b_CI): sig = 0
+    else: sig = 1
     return out_lib['a'], out_lib['b'], sig
 
 def TL_from_sample_model_selection(dat_sample, analysis = 'partition'):
@@ -258,33 +258,42 @@ def TL_from_sample_model_selection(dat_sample, analysis = 'partition'):
     from Xiao et al. 2011.  It calls the R function power_analysis(). 
     
     """
-    r = R()
-    r("source('Sup_2_Guidelines.r')")
     study_list = sorted(np.unique(dat_sample['study']))
     for study in study_list:
         dat_study = dat_sample[dat_sample['study'] == study]
         mean_study = dat_study['mean']
         var_study = dat_study['var']
-        
-        emp_b, emp_inter, emp_r, emp_p, emp_std_err = stats.linregress(np.log(dat_study['mean']), np.log(dat_study['var']))
-        b_list = []
-        inter_list = []
-        psig = 0
-        R2_list = []
+        exp_inter, b, sig = call_R_power_analysis(mean_study, var_study)
+        try: r2 = 1 - sum((np.log(var_study) - np.log(exp_inter * mean_study ** b)) ** 2) / \
+            sum((np.log(var_study) - np.mean(np.log(var_study))) ** 2)
+        except: r2 = 0
+        b_list = [study, b]
+        inter_list = [study, exp_inter]
+        p_list = [study, sig]
+        R2_list = [study, r2]
         for i_sim in dat_sample.dtype.names[5:]:
             var_sim = dat_study[i_sim][dat_study[i_sim] > 0] # Omit samples of zero variance 
             mean_list = dat_study['mean'][dat_study[i_sim] > 0]
-            sim_b, sim_inter, sim_r, sim_p, sim_std_error = stats.linregress(np.log(mean_list), np.log(var_sim))
-            b_list.append(sim_b)
-            inter_list.append(sim_inter)
-            R2_list.append(sim_r ** 2)
-            if sim_p < 0.05: psig += 1
-        psig /= len(dat_sample.dtype.names[5:])
-        out_file = open('TL_form_' + analysis + '.txt', 'a')
-        print>>out_file, study, emp_b, emp_inter, emp_r ** 2, emp_p, np.mean(b_list), np.mean(inter_list), np.mean(R2_list), \
-             psig, get_z_score(emp_b, b_list), np.percentile(b_list, 2.5), np.percentile(b_list, 97.5), get_z_score(emp_inter, inter_list), \
-             np.percentile(inter_list, 2.5), np.percentile(inter_list, 97.5)
-        out_file.close()
+            exp_inter, b, sig = call_R_power_analysis(mean_list, var_sim)
+            try: r2 = 1 - sum((np.log(var_sim) - np.log(exp_inter * mean_list ** b)) ** 2) / \
+                sum((np.log(var_sim) - np.mean(np.log(var_sim))) ** 2)
+            except: r2 = 0
+            b_list.append(b)
+            inter_list.append(exp_inter)
+            R2_list.append(r2)
+            p_list.append(sig)
+        out_file_b = open('TL_form_' + analysis + '_ms_b.txt', 'a')
+        out_file_inter = open('TL_form_' + analysis + '_ms_inter.txt', 'a')
+        out_file_r2 = open('TL_form_' + analysis + '_ms_r2.txt', 'a')
+        out_file_p = open('TL_form_' + analysis + '_ms_p.txt', 'a')
+        print>>out_file_b, ' \t'.join(map(str, b_list))
+        print>>out_file_inter, ' \t'.join(map(str, inter_list))
+        print>>out_file_r2, ' \t'.join(map(str, R2_list))
+        print>>out_file_p, ' \t'.join(map(str, p_list))
+        out_file_b.close()
+        out_file_inter.close()
+        out_file_r2.close()
+        out_file_p.close()
           
 def get_quadratic_sig_data(dat_sample, analysis = 'partition'):
     """Compute the p-value of the quadratic term for each dataset
