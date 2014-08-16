@@ -411,7 +411,7 @@ def inclusion_criteria(dat_study, sig = False):
     else: return False
 
 # Below are functions for plotting
-def plot_obs_expc(obs, expc, expc_upper, expc_lower, obs_type, loglog, ax = None):
+def plot_obs_expc(obs, expc, expc_upper, expc_lower, obs_type, loglog, legend = False, loc = 2, ax = None):
     """Generic function to generate an observed vs expected figure with 1:1 line, 
     
     with obs on the x-axis, expected on the y-axis, and shading for CI of expected.
@@ -422,6 +422,8 @@ def plot_obs_expc(obs, expc, expc_upper, expc_lower, obs_type, loglog, ax = None
     expc_lower - list of the lower percentile of expected values, the same length as obs
     obs_type - list of the same length of obs, specifying whether each obs is spatial (red) or temporal (blue)
     loglog - whether both axes are to be transformed
+    legend - if legend is to be included
+    loc - if legend is True, the location of the legend (default at upper left)
     ax - whether the plot is generated on a given figure, or a new plot object is to be created
     
     """
@@ -455,11 +457,15 @@ def plot_obs_expc(obs, expc, expc_upper, expc_lower, obs_type, loglog, ax = None
     i_temp = [i for i, x in enumerate(obs_type) if x == 'temporal']
     
     plt.fill_between(obs, expc_lower, expc_upper, color = '#FF83FA', alpha = 0.5)
-    plt.scatter([obs[i] for i in i_spac], [expc[i] for i in i_spac], c = '#EE4000',  edgecolors='none', alpha = 0.5, s = 8)
-    plt.scatter([obs[i] for i in i_temp], [expc[i] for i in i_temp], c = '#1C86EE',  edgecolors='none', alpha = 0.5, s = 8)   
+    spat = plt.scatter([obs[i] for i in i_spac], [expc[i] for i in i_spac], c = '#EE4000',  \
+                        edgecolors='none', alpha = 0.5, s = 8, label = 'Spatial')
+    temp = plt.scatter([obs[i] for i in i_temp], [expc[i] for i in i_temp], c = '#1C86EE',  \
+                        edgecolors='none', alpha = 0.5, s = 8, label = 'Temporal')   
     plt.plot([axis_min, axis_max],[axis_min, axis_max], 'k-')
     plt.xlim(axis_min, axis_max)
     plt.ylim(axis_min, axis_max)
+    if legend:
+        plt.legend([spat, temp], ['Spatial', 'Temporal'], scatterpoints = 1, loc = loc, prop = {'size': 8})
     ax.tick_params(axis = 'both', which = 'major', labelsize = 6)
     return ax
 
@@ -546,7 +552,7 @@ def comp_dens(val_list, cov_factor):
     density._compute_covariance()
     return density
 
-def plot_dens(obs, expc, obs_type, ax = None):
+def plot_dens(obs, expc, obs_type, ax = None, legend = False, loc = 2):
     """Plot the density of observed and expected values, with spatial and temporal observations 
     
     distinguished by color.
@@ -565,8 +571,10 @@ def plot_dens(obs, expc, obs_type, ax = None):
     dens_obs_spatial = comp_dens(obs_spatial, cov_factor)
     dens_obs_temporal = comp_dens(obs_temporal, cov_factor)
     dens_expc = comp_dens(expc, cov_factor)
-    plt.plot(xs, dens_obs_spatial(xs), c = '#EE4000')
-    plt.plot(xs, dens_obs_temporal(xs), c = '#1C86EE')
-    plt.plot(xs, dens_expc(xs), 'k-')
+    spat, = plt.plot(xs, dens_obs_spatial(xs), c = '#EE4000')
+    temp, = plt.plot(xs, dens_obs_temporal(xs), c = '#1C86EE')
+    feas, = plt.plot(xs, dens_expc(xs), 'k-')
+    if legend:
+        plt.legend([spat, temp, feas], ['Spatial', 'Temporal', 'Feasible Set'], loc = loc, prop = {'size': 8})
     ax.tick_params(axis = 'both', which = 'major', labelsize = 6)
     return ax
