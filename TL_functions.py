@@ -403,8 +403,8 @@ def TL_analysis(data, study, sample_size = 1000, t_limit = 7200, analysis = 'par
 
 def inclusion_criteria(dat_study, sig = False):
     """Criteria that datasets need to meet to be included in the analysis"""
-    b, inter, rval, pval, std_err = stats.linregress(np.log(dat_study['mean']), np.log(dat_study['var']))
     dat_study = dat_study[(dat_study['N'] >= N_MIN) * (dat_study['Q'] >= Q_MIN)]
+    b, inter, rval, pval, std_err = stats.linregress(np.log(dat_study['mean']), np.log(dat_study['var']))
     if len(dat_study) >= n_MIN: 
         if ((not sig) or (pval < 0.05)): # If significance is not required, or if the relationship is significant
             return True
