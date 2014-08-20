@@ -552,7 +552,7 @@ def comp_dens(val_list, cov_factor):
     density._compute_covariance()
     return density
 
-def plot_dens(obs, expc, obs_type, ax = None, legend = False, loc = 2):
+def plot_dens(obs, expc, obs_type, ax = None, legend = False, loc = 2, vline = False):
     """Plot the density of observed and expected values, with spatial and temporal observations 
     
     distinguished by color.
@@ -574,6 +574,9 @@ def plot_dens(obs, expc, obs_type, ax = None, legend = False, loc = 2):
     spat, = plt.plot(xs, dens_obs_spatial(xs), c = '#EE4000')
     temp, = plt.plot(xs, dens_obs_temporal(xs), c = '#1C86EE')
     feas, = plt.plot(xs, dens_expc(xs), 'k-')
+    if vline:
+        plt.axvline(x = vline, ymin = 0, ymax = 1.1 * np.max(dens_obs_spatial(xs), dens_obs_temporal(x), dens_expc(xs)), \
+                    ls = 'k--')
     if legend:
         plt.legend([spat, temp, feas], ['Spatial', 'Temporal', 'Feasible Set'], loc = loc, prop = {'size': 8})
     ax.tick_params(axis = 'both', which = 'major', labelsize = 6)
