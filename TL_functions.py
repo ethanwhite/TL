@@ -552,7 +552,7 @@ def comp_dens(val_list, cov_factor):
     density._compute_covariance()
     return density
 
-def plot_dens(obs, expc, obs_type, ax = None, legend = False, loc = 2, vline = False):
+def plot_dens(obs, expc, obs_type, ax = None, legend = False, loc = 2, vline = None, xlim = None):
     """Plot the density of observed and expected values, with spatial and temporal observations 
     
     distinguished by color.
@@ -565,19 +565,51 @@ def plot_dens(obs, expc, obs_type, ax = None, legend = False, loc = 2, vline = F
     obs_spatial = [obs[i] for i in range(len(obs)) if obs_type[i] == 'spatial']
     obs_temporal = [obs[i] for i in range(len(obs)) if obs_type[i] == 'temporal']
     full_values = list(obs) + list(expc)
-    min_plot, max_plot = 0.9 * min(full_values), 1.1 * max(full_values)
+    min_plot = 0.9 * min(full_values)
+    max_plot = 1.1 * max(full_values)
     xs = np.linspace(min_plot, max_plot, 200)
     cov_factor = 0.2
     dens_obs_spatial = comp_dens(obs_spatial, cov_factor)
     dens_obs_temporal = comp_dens(obs_temporal, cov_factor)
     dens_expc = comp_dens(expc, cov_factor)
-    spat, = plt.plot(xs, dens_obs_spatial(xs), c = '#EE4000')
-    temp, = plt.plot(xs, dens_obs_temporal(xs), c = '#1C86EE')
-    feas, = plt.plot(xs, dens_expc(xs), 'k-')
-    if vline:
-        plt.axvline(x = vline, ymin = 0, ymax = 1.1 * np.max(dens_obs_spatial(xs), dens_obs_temporal(xs), dens_expc(xs)), \
-                    ls = 'k--')
+    spat, = plt.plot(xs, dens_obs_spatial(xs), c = '#EE4000', linewidth=2)
+    temp, = plt.plot(xs, dens_obs_temporal(xs), c = '#1C86EE', linewidth=2)
+    feas, = plt.plot(xs, dens_expc(xs), 'k-', linewidth=2)
+    if vline != None:
+        ymax = 1.1 * max([max(dens_obs_spatial(xs)), max(dens_obs_temporal(xs)), max(dens_expc(xs))])
+        plt.plot((vline, vline), (0, ymax), 'k--')
     if legend:
         plt.legend([spat, temp, feas], ['Spatial', 'Temporal', 'Feasible Set'], loc = loc, prop = {'size': 8})
     ax.tick_params(axis = 'both', which = 'major', labelsize = 6)
+    if xlim != None:
+        plt.xlim(xlim)
+    return ax
+
+def plot_dens_par_comp(obs, pars, comps, ax = None, legend = False, loc = 2, vline = None, xlim = None):
+    """Density plot the the spatial and temporal data pooled together, and results from both partitions and compositions.
+    
+    """
+    if not ax:
+        fig = plt.figure(figsize = (3.5, 3.5))
+        ax = plt.subplot(111)
+    
+    full_values = list(obs) + list(pars) + list(comp)
+    min_plot = 0.9 * min(full_values)
+    max_plot = 1.1 * max(full_values)
+    xs = np.linspace(min_plot, max_plot, 200)
+    cov_factor = 0.2
+    dens_obs = comp_dens(obs, cov_factor)
+    dens_par = comp_dens(pars, cov_factor)
+    dens_comp = comp_dens(comp, cov_factor)
+    obs, = plt.plot(xs, dens_obs(xs), 'k-', linewidth=2)
+    par, = plt.plot(xs, dens_par(xs), c = '#228B22', linewidth=2)
+    comp, = plt.plot(xs, dens_comp(xs), c = '#CD69C9', linewidth=2)
+    if vline != None:
+        ymax = 1.1 * max([max(dens_obs(xs)), max(dens_par(xs)), max(dens_comp(xs))])
+        plt.plot((vline, vline), (0, ymax), 'k--')
+    if legend:
+        plt.legend([obs, par, comp], ['Empirical', 'Partitions', 'Compositions'], loc = loc, prop = {'size': 8})
+    ax.tick_params(axis = 'both', which = 'major', labelsize = 6)
+    if xlim != None:
+        plt.xlim(xlim)
     return ax
