@@ -575,7 +575,7 @@ def plot_dens(obs, expc, obs_type, ax = None, legend = False, loc = 2, vline = F
     temp, = plt.plot(xs, dens_obs_temporal(xs), c = '#1C86EE')
     feas, = plt.plot(xs, dens_expc(xs), 'k-')
     if vline:
-        plt.axvline(x = vline, ymin = 0, ymax = 1.1 * np.max(dens_obs_spatial(xs), dens_obs_temporal(x), dens_expc(xs)), \
+        plt.axvline(x = vline, ymin = 0, ymax = 1.1 * np.max(dens_obs_spatial(xs), dens_obs_temporal(xs), dens_expc(xs)), \
                     ls = 'k--')
     if legend:
         plt.legend([spat, temp, feas], ['Spatial', 'Temporal', 'Feasible Set'], loc = loc, prop = {'size': 8})
