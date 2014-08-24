@@ -586,7 +586,7 @@ def plot_dens(obs, expc, obs_type, ax = None, legend = False, loc = 2, vline = N
     return ax
 
 def plot_dens_par_comp(obs, pars, comps, ax = None, legend = False, loc = 2, vline = None, xlim = None):
-    """Density plot the the spatial and temporal data pooled together, and results from both partitions and compositions.
+    """Density plot of the spatial and temporal data pooled together, and results from both partitions and compositions.
     
     """
     if not ax:
@@ -612,4 +612,31 @@ def plot_dens_par_comp(obs, pars, comps, ax = None, legend = False, loc = 2, vli
     ax.tick_params(axis = 'both', which = 'major', labelsize = 6)
     if xlim != None:
         plt.xlim(xlim)
+    return ax
+
+def plot_dens_par_comp_single_obs(obs, pars, comps, ax = None, legend = False, loc = 2, vline = None, xlim = None):
+    """Density plot of results from both partitions and compositions with value from a single observation.
+    
+    """
+    if not ax:
+        fig = plt.figure(figsize = (3.5, 3.5))
+        ax = plt.subplot(111)
+    
+    full_values = list(pars) + list(comps) + list([obs])
+    min_plot = 0.9 * min(full_values)
+    max_plot = 1.1 * max(full_values)
+    xs = np.linspace(min_plot, max_plot, 200)
+    cov_factor = 0.2
+    dens_par = comp_dens(pars, cov_factor)
+    dens_comp = comp_dens(comps, cov_factor)
+    par_plot, = plt.plot(xs, dens_par(xs), c = '#228B22', linewidth=2)
+    comp_plot, = plt.plot(xs, dens_comp(xs), c = '#CD69C9', linewidth=2)
+    ymax = 1.1 * max([max(dens_par(xs)), max(dens_comp(xs))])
+    plt.plot((obs, obs), (0, ymax), 'k-', linewidth = 2)
+    if legend:
+        plt.legend([par_plot, comp_plot], ['Partitions', 'Compositions'], loc = loc, prop = {'size': 8})
+    ax.tick_params(axis = 'both', which = 'major', labelsize = 5)
+    if xlim != None:
+        plt.xlim(xlim)
+    else: plt.xlim((0.9 * min(full_values), 1.1 * max(full_values)))
     return ax
