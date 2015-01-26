@@ -3,6 +3,7 @@ from __future__ import division, with_statement
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid.inset_locator import inset_axes
 import partitions as parts
 from macroecotools import AICc
 import numpy as np
@@ -140,7 +141,7 @@ def sample_var(data, study, sample_size = 1000, t_limit = 7200, analysis = 'part
         else: break # Break out of for-loop if a Q-N combo is skipped
     
     if len(data_study) == len(var_parts): # If no QN combos are omitted, print to file
-        out_write_var = open('taylor_QN_var_predicted_' + analysis + '_full.txt', 'a')
+        out_write_var = open('taylor_QN_var_predicted_' + analysis + '_' + str(sample_size) + '_full.txt', 'a')
         for var_row in var_parts:
             print>>out_write_var, '\t'.join([str(x) for x in var_row])
         out_write_var.close()
@@ -639,4 +640,56 @@ def plot_dens_par_comp_single_obs(obs, pars, comps, ax = None, legend = False, l
     if xlim != None:
         plt.xlim(xlim)
     else: plt.xlim((0.9 * min(full_values), 1.1 * max(full_values)))
+    return ax
+
+def plot_emp_vs_sim(study_id, data_dir = './out_files/', feas_type = 'partition', ax = None, inset = True, legend = False):
+    """Plot of empirical and simulated mean-variance relationships for a given data set
+    
+    to help visually illustrate our results.
+    Includes scatter plot of empirical data and its fitted line, scatter plot and fitted line for one
+    set of simulated s_ij^2, 95 quantiles of s_ij^2 for each s_i^2 value, and the distribution of b in an inset.
+    
+    Input: 
+    study_id - ID of the data set of interest, in the form listed in Appendix A. 
+    """
+    if not ax:
+        fig = plt.figure(figsize = (3.5, 3.5))
+        ax = plt.subplot(111)
+    var_dat = get_var_sample_file(data_dir + 'taylor_QN_var_predicted_' + feas_type + '_full.txt')
+    var_study = var_dat[var_dat['study'] == study_id]
+    sim_var = [var_study[x][5] for x in xrange(len(var_study))] # take the first simulated sequence
+    
+    b_emp, inter_emp, r, p, std_err = stats.linregress(np.log(var_study['mean']), np.log(var_study['var']))
+    b_list = []
+    for k in xrange(len(var_study[0]) - 5):
+        study_k = [var_study[x][k + 5] for x in xrange(len(var_study))]
+        mean_k = [var_study['mean'][p] for p in xrange(len(var_study)) if study_k[p] != 0]
+        study_k = [study_k[p] for p in xrange(len(study_k)) if study_k[p] != 0]
+        b_k, inter, r, p, std_err = stats.linregress(np.log(mean_k), np.log(study_k))
+        if k == 0: b_0, inter_0 = b_k, inter
+        b_list.append(b_k)
+   
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    plt.scatter(var_study['mean'], var_study['var'], s = 8, c = 'black', edgecolors='none')
+    emp, = plt.plot(var_study['mean'], np.exp(inter_emp) * var_study['mean'] ** b_emp, '-', c = 'black', linewidth=1.5)
+    if feas_type == 'partition': plot_col = '#228B22'
+    else: plot_col = '#CD69C9'
+    plt.scatter(var_study['mean'], sim_var, s = 8, c = plot_col, edgecolors='none')
+    sim, = plt.plot(var_study['mean'], np.exp(inter_0) * var_study['mean'] ** b_0, '-', linewidth=1.5, c = plot_col)
+    ax.tick_params(axis = 'both', which = 'major', labelsize = 9)
+    ax.set_xlabel('Mean', labelpad = 4, size = 10)
+    ax.set_ylabel('Variance', labelpad = 4, size = 10)
+    if legend:
+        plt.legend([emp, sim], ['Empirical', (feas_type.title()) + 's'], loc = 4, prop = {'size': 8}) 
+    if inset:
+        axins = inset_axes(ax, width="30%", height="30%", loc=2)
+        cov_factor = 0.2
+        xs = np.linspace(0.9 * min(b_list + [b_emp]), 1.1 * max(b_list + [b_emp]), 200)
+        dens_b = comp_dens(b_list, cov_factor)
+        b_dens, = plt.plot(xs, dens_b(xs), c = plot_col, linewidth=1.5)
+        ymax = 1.1 * max(dens_b(xs))
+        plt.plot((b_emp, b_emp), (0, ymax), 'k-', linewidth = 1.5)
+        plt.tick_params(axis = 'y', which = 'major', left = 'off', right = 'off', labelleft = 'off')
+        plt.tick_params(axis = 'x', which = 'major', top = 'off', bottom = 'off', labelbottom = 'off')
     return ax
