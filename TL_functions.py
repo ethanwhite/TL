@@ -520,6 +520,67 @@ def plot_obs_expc_alt(obs, expc, obs_type, loglog, ax = None):
     ax.tick_params(axis = 'both', which = 'major', labelsize = 6)
     return ax
 
+def plot_obs_expc_new(obs, expc, expc_upper, expc_lower, analysis, log, ax = None):
+    """Modified version of obs-expc plot suggested by R2. The points are separated by whether their CIs are above, below, 
+    
+    or overlapping the empirical value
+    Input: 
+    obs - list of observed values
+    expc_mean - list of mean simulated values for the corresponding observed values
+    expc_upper - list of the 97.5% quantile of the simulated vlaues
+    expc_lower - list of the 2.5% quantile of the simulated values
+    analysis - whether it is patitions or compositions
+    log - whether the y axis is to be transformed. If True, expc/obs is plotted. If Flase, expc - obs is plotted.
+    ax - whether the plot is generated on a given figure, or a new plot object is to be created
+    
+    """
+    obs, expc, expc_upper, expc_lower = list(obs), list(expc), list(expc_upper), list(expc_lower)
+    if not ax:
+        fig = plt.figure(figsize = (3.5, 3.5))
+        ax = plt.subplot(111)
+    
+    ind_above = [i for i in range(len(obs)) if expc_lower[i] > obs[i]]
+    ind_below = [i for i in range(len(obs)) if expc_upper[i] < obs[i]]
+    ind_overlap = [i for i in range(len(obs)) if expc_lower[i] <= obs[i] <= expc_upper[i]]
+    
+    if log:
+        expc_standardize = [expc[i] / obs[i] for i in range(len(obs))]
+        expc_upper_standardize = [expc_upper[i] / obs[i] for i in range(len(obs))]
+        expc_lower_standardize = [expc_lower[i] / obs[i] for i in range(len(obs))]
+        axis_min = 0.9 * min([expc_lower_standardize[i] for i in range(len(expc_lower_standardize)) if expc_lower_standardize[i] != 0])
+        axis_max = 1.5 * max(expc_upper_standardize)
+    else:
+        expc_standardize = [expc[i] - obs[i] for i in range(len(obs))]
+        expc_upper_standardize = [expc_upper[i] - obs[i] for i in range(len(obs))]
+        expc_lower_standardize = [expc_lower[i] - obs[i] for i in range(len(obs))]
+        axis_min = 1.1 * min(expc_lower_standardize)
+        axis_max = 1.1 * max(expc_upper_standardize)
+   
+    if analysis == 'partition': col = '#228B22'
+    else: col = '#CD69C9'
+    ind_full = [] 
+    for index in [ind_below, ind_overlap, ind_above]:
+        expc_standardize_ind = [expc_standardize[i] for i in index]
+        sort_ind_ind = sorted(range(len(expc_standardize_ind)), key = lambda i: expc_standardize_ind[i])
+        sorted_index = [index[i] for i in sort_ind_ind]
+        ind_full.extend(sorted_index)
+
+    xaxis_max = len(ind_full)
+    for i, ind in enumerate(ind_full):
+        plt.plot([i, i],[expc_lower_standardize[ind], expc_upper_standardize[ind]], '-', c = col, linewidth = 0.4)
+    plt.scatter(range(len(ind_full)), [expc_standardize[i] for i in ind_full], c = col,  edgecolors='none', s = 8)    
+    if log: 
+        plt.plot([0, xaxis_max + 1], [1, 1], 'k-', linewidth = 1.5)
+        ax.set_yscale('log')
+    else: plt.plot([0, xaxis_max + 1], [0, 0], 'k-', linewidth = 1.5)
+    plt.plot([len(ind_below) - 0.5, len(ind_below) - 0.5], [axis_min, axis_max], 'k--')
+    plt.plot([len(ind_below) + len(ind_overlap) - 0.5, len(ind_below) + len(ind_overlap) - 0.5], [axis_min, axis_max], 'k--')
+    plt.xlim(0, xaxis_max)
+    plt.ylim(axis_min, axis_max)
+    plt.tick_params(axis = 'y', which = 'major', left = 'off', right = 'off', labelleft = 'off')
+    plt.tick_params(axis = 'x', which = 'major', top = 'off', bottom = 'off', labelbottom = 'off')
+    return ax
+
 def plot_mean_var(mean, obs_var, expc_var, obs_type, loglog = True, ax = None):
     """Plot the observed and expected variance against mean, distinguishing 
     
