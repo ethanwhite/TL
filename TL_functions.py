@@ -117,7 +117,7 @@ def get_var_for_Q_N(q, n, sample_size, t_limit, analysis):
         print 'Timed out!'
         return QN_var
 
-def sample_var(data, study, sample_size = 1000, t_limit = 7200, analysis = 'partition'):
+def sample_var(data, study, sample_size = 1000, t_limit = 7200, analysis = 'partition', out_folder = './out_files/'):
     """Obtain and record the variance of partition or composition samples.
     
     Input:
@@ -141,7 +141,7 @@ def sample_var(data, study, sample_size = 1000, t_limit = 7200, analysis = 'part
         else: break # Break out of for-loop if a Q-N combo is skipped
     
     if len(data_study) == len(var_parts): # If no QN combos are omitted, print to file
-        out_write_var = open('taylor_QN_var_predicted_' + analysis + '_' + str(sample_size) + '_full.txt', 'a')
+        out_write_var = open(out_folder + 'taylor_QN_var_predicted_' + analysis + '_' + str(sample_size) + '_full.txt', 'a')
         for var_row in var_parts:
             print>>out_write_var, '\t'.join([str(x) for x in var_row])
         out_write_var.close()
@@ -162,43 +162,7 @@ def quadratic_term(list_of_mean, list_of_var):
     quad_res = sm.OLS(log_var, indep_var).fit()
     return quad_res.pvalues[2]
 
-def fit_nls(list_of_mean, list_of_var): 
-    """Apply nonlinear regression instead of linear regression on log scale
-    
-    and return parameter estimates for a, b, and sigma^2.
-    
-    """
-    # Remove zero from var
-    var_no_zero = np.array([x for x in list_of_var if x > 0])
-    mean_no_zero = np.array([list_of_mean[i] for i in range(len(list_of_mean)) if list_of_var[i] > 0])
-    b0, inter0, r, p, std_error = stats.linregress(np.log(mean_no_zero), np.log(var_no_zero))
-    def func_power(x, a, b):
-        return a * (x ** b)
-    try:
-        popt, pcov = scipy.optimize.curve_fit(func_power, mean_no_zero, var_no_zero, p0 = (np.exp(inter0), b0))
-    except:
-        popt = [np.exp(inter0), b0] # If failed to converge, retain parameters from linear regression
-    residuals = var_no_zero - func_power(mean_no_zero, popt[0], popt[1])
-    s2 = np.var(residuals, ddof = 1)
-    return popt[0], popt[1], s2
-
-def aicc_nls_ls(list_of_mean, list_of_var):
-    """Return the difference in AICc values between the nonlinear and loglinear models"""
-    var_no_zero = np.array([x for x in list_of_var if x > 0])
-    mean_no_zero = np.array([list_of_mean[i] for i in range(len(list_of_mean)) if list_of_var[i] > 0])
-    b0, inter0, r, p, std_error = stats.linregress(np.log(mean_no_zero), np.log(var_no_zero))
-    s2_ls = np.var(np.log(var_no_zero) - inter0 - b0 * np.log(mean_no_zero), ddof = 1)
-    a_nls, b_nls, s2_nls = fit_nls(mean_no_zero, var_no_zero)
-    l_nls = np.sum(stats.norm.logpdf(var_no_zero, scale = s2_nls ** 0.5, \
-                                        loc = a_nls * (mean_no_zero ** b_nls)))
-    l_ls = np.sum(stats.lognorm.logpdf(var_no_zero, s2_ls ** 0.5, \
-                                       scale = np.exp(inter0 + b0 * np.log(mean_no_zero))))
-    try:
-        delta_AICc = AICc(3, l_nls, len(var_no_zero)) - AICc(3, l_ls, len(var_no_zero))
-    except: delta_AICc = 0
-    return delta_AICc
-
-def TL_from_sample(dat_sample, analysis = 'partition'):
+def TL_from_sample(dat_sample, analysis = 'partition', out_folder = './out_files/'):
     """Obtain the empirical and simulated TL relationship given the output file from sample_var().
     
     Here only the summary statistics are recorded for each study, instead of results from each 
@@ -228,91 +192,13 @@ def TL_from_sample(dat_sample, analysis = 'partition'):
             R2_list.append(sim_r ** 2)
             if sim_p < 0.05: psig += 1
         psig /= len(dat_sample.dtype.names[5:])
-        out_file = open('TL_form_' + analysis + '.txt', 'a')
+        out_file = open(out_folder + 'TL_form_' + analysis + '.txt', 'a')
         print>>out_file, study, emp_b, emp_inter, emp_r ** 2, emp_p, np.mean(b_list), np.mean(inter_list), np.mean(R2_list), \
              psig, get_z_score(emp_b, b_list), np.percentile(b_list, 2.5), np.percentile(b_list, 97.5), get_z_score(emp_inter, inter_list), \
              np.percentile(inter_list, 2.5), np.percentile(inter_list, 97.5)
         out_file.close()
 
-def call_R_power_analysis(list_of_mean, list_of_var):
-    """This function calls the R function power_analysis() 
-    
-    and returns estimates of exp(inter), b, and significance at alpha = 0.05.
-    
-    """
-    r = R()
-    r("source('Sup_2_Guidelines.r')")
-    var_no_zero = np.array([x for x in list_of_var if x > 0])
-    mean_no_zero = np.array([list_of_mean[i] for i in range(len(list_of_mean)) if list_of_var[i] > 0])
-    r.assign('x', mean_no_zero)
-    r.assign('y', var_no_zero)
-    r('out = power_analysis(x, y, diagno = F)')
-    out_lib = r.get('out')
-    b_CI = out_lib['b_confint']
-    if min(b_CI) < 0 < max(b_CI): sig = 0
-    else: sig = 1
-    return out_lib['a'], out_lib['b'], sig
-
-def TL_from_sample_model_selection(dat_sample, analysis = 'partition'):
-    """This function is similar to TL_from_sample(), except that model selection/averaging is adopted
-    
-    from Xiao et al. 2011.  It calls the R function power_analysis(). 
-    
-    """
-    study_list = sorted(np.unique(dat_sample['study']))
-    for study in study_list:
-        dat_study = dat_sample[dat_sample['study'] == study]
-        mean_study = dat_study['mean']
-        var_study = dat_study['var']
-        exp_inter, b, sig = call_R_power_analysis(mean_study, var_study)
-        try: r2 = 1 - sum((np.log(var_study) - np.log(exp_inter * mean_study ** b)) ** 2) / \
-            sum((np.log(var_study) - np.mean(np.log(var_study))) ** 2)
-        except: r2 = 0
-        b_list = [study, b]
-        inter_list = [study, exp_inter]
-        p_list = [study, sig]
-        R2_list = [study, r2]
-        for i_sim in dat_sample.dtype.names[5:]:
-            var_sim = dat_study[i_sim][dat_study[i_sim] > 0] # Omit samples of zero variance 
-            mean_list = dat_study['mean'][dat_study[i_sim] > 0]
-            exp_inter, b, sig = call_R_power_analysis(mean_list, var_sim)
-            try: r2 = 1 - sum((np.log(var_sim) - np.log(exp_inter * mean_list ** b)) ** 2) / \
-                sum((np.log(var_sim) - np.mean(np.log(var_sim))) ** 2)
-            except: r2 = 0
-            b_list.append(b)
-            inter_list.append(exp_inter)
-            R2_list.append(r2)
-            p_list.append(sig)
-        out_file_b = open('TL_form_' + analysis + '_ms_b.txt', 'a')
-        out_file_inter = open('TL_form_' + analysis + '_ms_inter.txt', 'a')
-        out_file_r2 = open('TL_form_' + analysis + '_ms_r2.txt', 'a')
-        out_file_p = open('TL_form_' + analysis + '_ms_p.txt', 'a')
-        print>>out_file_b, ' \t'.join(map(str, b_list))
-        print>>out_file_inter, ' \t'.join(map(str, inter_list))
-        print>>out_file_r2, ' \t'.join(map(str, R2_list))
-        print>>out_file_p, ' \t'.join(map(str, p_list))
-        out_file_b.close()
-        out_file_inter.close()
-        out_file_r2.close()
-        out_file_p.close()
-          
-#def TL_from_sample_model_selection_python(dat_sample, analysis = 'partition'):
-    #"""Implement the same algorithm for model selection in python for speed"""
-    #aicc_file = get_val_ind_sample_file('TL_AICc_' + analysis + '.txt') 
-    #study_list = sorted(np.unique(dat_sample['study']))
-    #for study in study_list:
-        #dat_study = dat_sample[dat_sample['study'] == study]
-        #aicc_study = aicc_file[aicc_file['study'] == study][0]
-        #mean_list = dat_study['mean']
-        #for i in range(4, len(dat_sample.dtype.names) + 1):
-            #var_list = dat_study[dat_sample.dtype.names[i]]
-            #var_sample = np.array([x for x in var_list if x > 0]) # Remove records with zero var
-            #mean_sample = np.array([mean_list[j] for j in range(len(mean_list)) if var_list[j] > 0 ]) 
-            ## Model selection 
-            #if aicc_study[i - 3] > 2: # LR
-                #b, inter, r, p, std_error = stats.linregress(np.log(mean_sample), np.log(var_sample))
-                
-def get_quadratic_sig_data(dat_sample, analysis = 'partition'):
+def get_quadratic_sig_data(dat_sample, analysis = 'partition', out_folder = './out_files/'):
     """Compute the p-value of the quadratic term for each dataset
     
     as well as all of its partitions/compositions and write results to file.
@@ -329,79 +215,10 @@ def get_quadratic_sig_data(dat_sample, analysis = 'partition'):
             mean_list = dat_study['mean'][dat_study[i_sim] > 0]
             sim_quad_p = quadratic_term(mean_list, var_sim)
             p_list.append(sim_quad_p)
-        out_file = open('TL_quad_p_' + analysis + '.txt', 'a')
+        out_file = open(out_folder + 'TL_quad_p_' + analysis + '.txt', 'a')
         print>>out_file, ' \t'.join(map(str, p_list))
         out_file.close()
-
-def aicc_nls_ls_to_file(dat_sample, analysis = 'partition'):
-    """Obtain the delta-AICc for each empirical dataset and each of its simulations, then write to file"""
-    study_list = sorted(np.unique(dat_sample['study']))
-    for study in study_list:
-        aicc_list = [study]
-        dat_study = dat_sample[dat_sample['study'] == study]
-        aicc_emp = aicc_nls_ls(dat_study['mean'], dat_study['var'])
-        aicc_list.append(aicc_emp)
-        for i_sim in dat_sample.dtype.names[5:]:
-            var_sim = dat_study[i_sim][dat_study[i_sim] > 0] # Omit samples of zero variance 
-            mean_list = dat_study['mean'][dat_study[i_sim] > 0]
-            aicc_sim = aicc_nls_ls(mean_list, var_sim)
-            aicc_list.append(aicc_sim)
-        out_file = open('TL_AICc_' + analysis + '.txt', 'a')
-        print>>out_file, ' \t'.join(map(str, aicc_list))
-        out_file.close()
     
-def TL_analysis(data, study, sample_size = 1000, t_limit = 7200, analysis = 'partition'):
-    """Compare empirical TL relationship of one dataset to that obtained from random partitions or compositions."""
-    data_study = data[data['study'] == study]
-    data_study = data_study[data_study['N'] > 2] # Remove Q-N combos with N = 2
-    var_parts = []
-    for combo in data_study:
-        q = combo[1]
-        n = combo[2]
-        QN_var = get_var_for_Q_N(q, n, sample_size, t_limit, analysis)
-        if len(QN_var) == sample_size:
-            var_parts.append(QN_var)
-        else: break # Break out of for-loop if a Q-N combo is skipped
-    
-    if len(data_study) == len(var_parts): # IF no QN combos are omitted
-        # 1. Predicted var for each Q-N combo
-        var_study = np.zeros((len(data_study), ), dtype = [('f0', 'S25'), ('f1', int), ('f2', int), ('f3', float), 
-                                                           ('f4', float), ('f5', float), ('f6', float)])
-        var_study['f0'] = np.array([study] * len(data_study))
-        var_study['f1'] = data_study['Q']
-        var_study['f2'] = data_study['N']
-        var_study['f3'] = np.array([np.mean(QN_var) for QN_var in var_parts])
-        var_study['f4'] = np.array([np.median(QN_var) for QN_var in var_parts])
-        var_study['f5'] = np.array([np.percentile(QN_var, 2.5) for QN_var in var_parts])
-        var_study['f6'] = np.array([np.percentile(QN_var, 97.5) for QN_var in var_parts])
-        out_write_var = open('taylor_QN_var_predicted_' + analysis + '.txt', 'a')
-        out_var = csv.writer(out_write_var, delimiter = '\t')
-        out_var.writerows(var_study)
-        out_write_var.close()
-        
-        # 2. Predicted form of TL for study
-        b_list = []
-        inter_list = []
-        psig = 0
-        R2_list = []
-        effective_sample = 0
-        for i in range(sample_size):
-            var_list = np.array([var_part[i] for var_part in var_parts])
-            mean_list = data_study['mean']
-            mean_list = mean_list[var_list != 0] # Omit samples of zero variance in computing TL
-            var_list = var_list[var_list != 0]
-            b, inter, rval, pval, std_err = stats.linregress(np.log(mean_list), np.log(var_list))
-            b_list.append(b)
-            inter_list.append(inter)
-            R2_list.append(rval ** 2)
-            if pval < 0.05: psig += 1
-        psig = psig / sample_size
-        OUT = open('taylor_form_predicted_' + analysis + '.txt', 'a')
-        print>>OUT, study, psig, np.mean(R2_list), np.mean(b_list), np.median(b), np.percentile(b_list, 2.5), \
-             np.percentile(b_list, 97.5), np.mean(inter_list), np.median(inter_list), np.percentile(inter_list, 2.5), \
-             np.percentile(inter_list, 97.5)
-        OUT.close()
-
 def inclusion_criteria(dat_study, sig = False):
     """Criteria that datasets need to meet to be included in the analysis"""
     dat_study = dat_study[(dat_study['N'] >= N_MIN) * (dat_study['Q'] >= Q_MIN)]
@@ -577,7 +394,7 @@ def plot_obs_expc_new(obs, expc, expc_upper, expc_lower, analysis, log, ax = Non
     plt.plot([len(ind_below) + len(ind_overlap) - 0.5, len(ind_below) + len(ind_overlap) - 0.5], [axis_min, axis_max], 'k--')
     plt.xlim(0, xaxis_max)
     plt.ylim(axis_min, axis_max)
-    plt.tick_params(axis = 'y', which = 'major', left = 'off', right = 'off', labelleft = 'off')
+    plt.tick_params(axis = 'y', which = 'major', labelsize = 8, labelleft = 'on')
     plt.tick_params(axis = 'x', which = 'major', top = 'off', bottom = 'off', labelbottom = 'off')
     return ax
 
@@ -696,8 +513,8 @@ def plot_dens_par_comp_single_obs(obs, pars, comps, ax = None, legend = False, l
     ymax = 1.1 * max([max(dens_par(xs)), max(dens_comp(xs))])
     plt.plot((obs, obs), (0, ymax), 'k-', linewidth = 2)
     if legend:
-        plt.legend([par_plot, comp_plot], ['Partitions', 'Compositions'], loc = loc, prop = {'size': 8})
-    ax.tick_params(axis = 'both', which = 'major', labelsize = 5)
+        plt.legend([par_plot, comp_plot], ['Partitions', 'Compositions'], loc = loc, prop = {'size': 10})
+    ax.tick_params(axis = 'both', which = 'major', labelsize = 8)
     if xlim != None:
         plt.xlim(xlim)
     else: plt.xlim((0.9 * min(full_values), 1.1 * max(full_values)))
