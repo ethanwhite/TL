@@ -5,7 +5,6 @@ import numpy as np
 from scipy import stats
 
 study_info = tl.get_study_info('study_taxon_type.txt')
-# Only keep studies with significant slope
 tl_pars_par = tl.get_tl_par_file('TL_form_partition.txt')
 tl_pars_comp = tl.get_tl_par_file('TL_form_composition.txt')
 
@@ -132,29 +131,3 @@ print "Proortion of variance out of 95% quantile: partition, composition: ", \
       str((var_out_spa_par + var_out_temp_par) / (var_tot_spa + var_tot_temp)), str((var_out_spa_comp + var_out_temp_comp) / (var_tot_spa + var_tot_temp))
 print "Number of b out of 95% quantile: spatial (par, comp), temporal (par, comp):", \
       str(b_out_spa_par), str(b_out_spa_comp), str(b_out_temp_par), str(b_out_temp_comp)
-
-## 4. Print out number of datasets excluded by filter
-#study_info = tl.get_study_info('study_taxon_type.txt')
-#data_lit = tl.get_QN_mean_var_data('data_literature.txt')
-#data_glenda = tl.get_QN_mean_var_data('data_Glenda.txt')
-#data_all = np.hstack((data_lit, data_glenda))
-
-#study_list_full = np.unique(data_all['study'])
-#print "Spatial TL: ", str(len([study for study in study_list_full if study_info[study_info['study'] == study]['type'] == 'spatial']))
-#print "Temporal TL: ", str(len([study for study in study_list_full if study_info[study_info['study'] == study]['type'] == 'temporal']))                
-
-## Apply filter
-#data_all = data_all[(data_all['Q'] >= tl.Q_MIN) * (data_all['N'] >= tl.N_MIN)]
-#study_list_filtered = []
-#for study in np.unique(data_all['study']):
-    #data_study = data_all[data_all['study'] == study]
-    #if len(data_study) >= tl.n_MIN:
-        #study_list_filtered.append(study)
-    
-#print "Spatial TL after filter: ", str(len([study for study in study_list_filtered if study_info[study_info['study'] == study]['type'] == 'spatial']))
-#print "Temporal TL after filter: ", str(len([study for study in study_list_filtered if study_info[study_info['study'] == study]['type'] == 'temporal'])) 
-
-#var_partition = tl.get_var_sample_file('taylor_QN_var_predicted_partition_full.txt')
-#study_list_out = np.unique(var_partition['study'])
-#print "Spatial TL final: ", str(len([study for study in study_list_out if study_info[study_info['study'] == study]['type'] == 'spatial']))
-#print "Temporal TL final: ", str(len([study for study in study_list_out if study_info[study_info['study'] == study]['type'] == 'temporal'])) 
