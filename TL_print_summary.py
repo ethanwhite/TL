@@ -8,8 +8,8 @@ study_info = tl.get_study_info('study_taxon_type.txt')
 tl_pars_par = tl.get_tl_par_file('TL_form_partition.txt')
 tl_pars_comp = tl.get_tl_par_file('TL_form_composition.txt')
 
-var_par = tl.get_var_sample_file('taylor_QN_var_predicted_partition_full.txt')
-var_comp = tl.get_var_sample_file('taylor_QN_var_predicted_composition_full.txt')
+var_par = tl.get_var_sample_file('taylor_QN_var_predicted_partition_1000_full.txt')
+var_comp = tl.get_var_sample_file('taylor_QN_var_predicted_composition_1000_full.txt')
 
 study_spatial = [study for study in np.unique(var_par['study']) if study_info['type'] [study_info['study'] == study]== 'spatial']
 study_temporal = [study for study in np.unique(var_par['study']) if study_info['type'][study_info['study'] == study] == 'temporal']

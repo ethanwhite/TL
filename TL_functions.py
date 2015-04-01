@@ -4,7 +4,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from mpl_toolkits.axes_grid.inset_locator import inset_axes
-import partitions as parts
+import pypartitions as parts
 from macroecotools import AICc
 import numpy as np
 import scipy

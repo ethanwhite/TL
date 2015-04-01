@@ -26,8 +26,8 @@ plt.savefig('Fig1.pdf', dpi = 600)
 study_info = tl.get_study_info('study_taxon_type.txt')
 tl_pars_par = tl.get_tl_par_file('out_files/TL_form_partition.txt')
 
-var_par = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_partition_full.txt')
-var_comp = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_composition_full.txt')
+var_par = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_partition_1000_full.txt')
+var_comp = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_composition_1000_full.txt')
 par_quad = tl.get_val_ind_sample_file('out_files/TL_quad_p_partition.txt')
 comp_quad = tl.get_val_ind_sample_file('out_files/TL_quad_p_composition.txt')
 
@@ -93,8 +93,8 @@ plt.savefig('Fig2.pdf', dpi = 600)
 tl_pars_par = tl.get_tl_par_file('out_files/TL_form_partition.txt')
 study_sig = tl_pars_par['study']
 
-var_par = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_partition_full.txt')
-var_comp = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_composition_full.txt')
+var_par = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_partition_1000_full.txt')
+var_comp = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_composition_1000_full.txt')
 par_index = [i for i in range(len(var_par)) if var_par['study'][i] in study_sig]
 var_par = var_par[par_index]
 comp_index = [i for i in range(len(var_comp)) if var_comp['study'][i] in study_sig]
@@ -146,8 +146,8 @@ plt.subplots_adjust(wspace = 0.29, hspace = 0.29)
 plt.savefig('Fig3.pdf', dpi = 600)
 
 # 10. Figure B1 - examples of empirical variance versus the full distribution from the feasible set
-var_par = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_partition_full.txt')
-var_comp = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_composition_full.txt')
+var_par = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_partition_1000_full.txt')
+var_comp = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_composition_1000_full.txt')
 tl_pars_par = tl.get_tl_par_file('out_files/TL_form_partition.txt')
 random.seed(4) 
 qn_sets = random.sample(range(len(var_par)), 3) 
@@ -175,7 +175,7 @@ plt.savefig('FigB1.pdf', dpi = 600)
 study_info = tl.get_study_info('study_taxon_type.txt')
 tl_pars_par = tl.get_tl_par_file('out_files/TL_form_partition_4000.txt')
 
-var_par_1000 = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_partition_full.txt')
+var_par_1000 = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_partition_1000_full.txt')
 var_par = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_partition_4000_full.txt', sample_size = 4000)
 var_comp = tl.get_var_sample_file('out_files/taylor_QN_var_predicted_composition_4000_full.txt', sample_size = 4000)
 par_quad = tl.get_val_ind_sample_file('out_files/TL_quad_p_partition_4000.txt', sample_size = 4000)
